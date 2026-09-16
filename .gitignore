@@ -1,5 +1,7 @@
 .output
 .vinxi
+.netlify
+app.config.timestamp_*.js
 node_modules
 .env.local
 .env
