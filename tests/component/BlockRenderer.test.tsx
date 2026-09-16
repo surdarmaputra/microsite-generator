@@ -1,5 +1,14 @@
-import { describe, it, expect } from 'vitest'
+// @vitest-environment jsdom
+import { describe, it, expect, beforeAll } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
+
+beforeAll(() => {
+  global.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+})
 import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 import type { Block } from '~/lib/doc'
 

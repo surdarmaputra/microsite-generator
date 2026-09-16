@@ -2,7 +2,7 @@ import sanitizeHtml from 'sanitize-html'
 
 function makeOptions(storageUrl: string): sanitizeHtml.IOptions {
   return {
-    allowedTags: ['p', 'h2', 'h3', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li', 'blockquote', 'img', 'iframe', 'br'],
+    allowedTags: ['p', 'h2', 'h3', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li', 'blockquote', 'img', 'iframe', 'br', 'span'],
     allowedAttributes: {
       a: ['href', 'rel', 'target'],
       img: ['src', 'alt', 'width', 'height'],
@@ -54,7 +54,7 @@ export function sanitizeBlockHtml(html: string): string {
   return sanitizeHtml(html, makeOptions(storageUrl))
 }
 
-const CTA_HREF_RE = /^(https?|mailto|tel):\/\//
+const CTA_HREF_RE = /^(https?:\/\/|mailto:|tel:)/
 
 export function sanitizeCtaHref(href: string): string {
   if (CTA_HREF_RE.test(href)) return href

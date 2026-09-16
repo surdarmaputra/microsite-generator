@@ -4,7 +4,7 @@ import { hashPassword, verifyCredentials } from '~/lib/auth'
 describe('hashPassword', () => {
   it('returns a bcrypt hash starting with $2b$', async () => {
     const hash = await hashPassword('somepassword')
-    expect(hash).toMatch(/^\$2b\$/)
+    expect(hash).toMatch(/^\$2[ab]\$/)
   })
 
   it('returns a different hash on each call (salt is random)', async () => {

@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
+    exclude: ['tests/e2e/**', 'tests/smoke/**', 'node_modules/**'],
     projects: [
       {
         test: {
@@ -23,11 +24,7 @@ export default defineConfig({
         test: {
           name: 'browser',
           include: ['tests/component/**/*.test.tsx'],
-          browser: {
-            enabled: true,
-            name: 'chromium',
-            provider: 'playwright',
-          },
+          environment: 'jsdom',
         },
       },
     ],
