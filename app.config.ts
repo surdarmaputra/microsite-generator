@@ -45,6 +45,9 @@ function nodeBuiltinsBrowserShim(): Plugin {
 export default defineConfig({
   server: {
     preset: 'netlify',
+    experimental: {
+      asyncContext: true,
+    },
   },
   vite: {
     plugins: [tailwindcss(), nodeBuiltinsBrowserShim()],
