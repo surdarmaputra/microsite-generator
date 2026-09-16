@@ -29,43 +29,51 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      minio:
-        image: minio/minio
-        env:
-          MINIO_ROOT_USER: minioadmin
-          MINIO_ROOT_PASSWORD: minioadmin
-        ports: ['9000:9000']
-        options: >-
-          --health-cmd "curl -sf http://localhost:9000/minio/health/live"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/microsite_test?sslmode=disable
+      DATABASE_URL_MIGRATE: postgres://postgres:postgres@localhost:5432/microsite_test
+      ADMIN_USERS: admin:${{ secrets.TEST_ADMIN_HASH }}
+      SESSION_SECRET: test-secret-32-chars-minimum-xxxx
+      S3_ENDPOINT: http://localhost:9000
+      S3_REGION: us-east-1
+      S3_ACCESS_KEY_ID: minioadmin
+      S3_SECRET_ACCESS_KEY: minioadmin
+      S3_BUCKET: microsites
+      PUBLIC_STORAGE_URL: http://localhost:9000/microsites
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - run: bunx playwright install chromium --with-deps
-      - name: Create S3 bucket in MinIO
+      - name: Start MinIO
         run: |
-          curl -sf http://localhost:9000/minio/health/live || sleep 5
-          bunx --yes @aws-sdk/client-s3 || true
-          curl -X PUT "http://minioadmin:minioadmin@localhost:9000/microsites" || true
+          docker run -d --name minio \
+            -p 9000:9000 \
+            -e MINIO_ROOT_USER=minioadmin \
+            -e MINIO_ROOT_PASSWORD=minioadmin \
+            quay.io/minio/minio server /data
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:9000/minio/health/live && break || sleep 1
+          done
+      - name: Create S3 bucket
+        run: |
+          AWS_ACCESS_KEY_ID=minioadmin \
+          AWS_SECRET_ACCESS_KEY=minioadmin \
+          aws --endpoint-url http://localhost:9000 s3 mb s3://microsites
       - name: Migrate DB
-        env:
-          DATABASE_URL_MIGRATE: postgres://postgres:postgres@localhost:5432/microsite_test
         run: bun run migrate
+      - name: Build app
+        run: bun run build
+      - name: Start app
+        run: bun run start &
+      - name: Wait for app
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3000 && break || sleep 2
+          done
+      - run: bunx playwright install chromium --with-deps
       - name: Run e2e
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/microsite_test?sslmode=disable
-          DATABASE_URL_MIGRATE: postgres://postgres:postgres@localhost:5432/microsite_test
-          ADMIN_USERS: admin:${{ secrets.TEST_ADMIN_HASH }}
-          SESSION_SECRET: test-secret-32-chars-minimum-xxxx
-          S3_ENDPOINT: http://localhost:9000
-          S3_REGION: us-east-1
-          S3_ACCESS_KEY_ID: minioadmin
-          S3_SECRET_ACCESS_KEY: minioadmin
-          S3_BUCKET: microsites
-          PUBLIC_STORAGE_URL: http://localhost:9000/microsites
+          BASE_URL: http://localhost:3000
           TEST_USERNAME: admin
           TEST_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
         run: bun run test:e2e
