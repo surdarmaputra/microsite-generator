@@ -8,7 +8,7 @@ import { join, resolve } from 'node:path'
 const { handler } = await import('../.netlify/functions-internal/server/server.mjs')
 
 const PORT = process.env.PORT || 3000
-const STATIC_DIR = resolve('.output/public')
+const STATIC_DIR = resolve('dist')
 
 const MIME = {
   '.html': 'text/html',

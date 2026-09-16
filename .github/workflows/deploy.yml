@@ -27,7 +27,7 @@ jobs:
           S3_BUCKET: ${{ vars.S3_BUCKET }}
           PUBLIC_STORAGE_URL: ${{ vars.PUBLIC_STORAGE_URL }}
       - name: Deploy preview to Netlify
-        run: bunx netlify deploy --alias pr-${{ github.event.number }} --dir .output/public
+        run: bunx netlify deploy --alias pr-${{ github.event.number }} --dir dist
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
@@ -75,7 +75,7 @@ jobs:
           S3_BUCKET: ${{ vars.S3_BUCKET }}
           PUBLIC_STORAGE_URL: ${{ vars.PUBLIC_STORAGE_URL }}
       - name: Deploy prod to Netlify
-        run: bunx netlify deploy --prod --dir .output/public
+        run: bunx netlify deploy --prod --dir dist
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
