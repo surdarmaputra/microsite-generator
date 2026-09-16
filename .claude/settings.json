@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun:*)",
+      "Bash(bunx:*)",
+      "Bash(git:*)",
+      "Bash(drizzle-kit:*)",
+      "Bash(vitest:*)",
+      "Bash(playwright:*)"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+[build]
+  command = "bun run build"
+  publish = ".output/public"
+
+[build.environment]
+  NODE_VERSION = "20"
+  BUN_VERSION = "1.1.38"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["drizzle/**"]
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[headers]]
+  for = "/admin/preview/*"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[headers]]
+  for = "/login"
+  [headers.values]
+    Cache-Control = "no-store"

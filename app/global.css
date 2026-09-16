@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  --radius: 1rem;
+  --color-surface: #f9fafb;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+}
+
+.public-page {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #111;
+  }
+}
