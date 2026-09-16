@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   deploy-preview:
@@ -36,6 +37,19 @@ jobs:
           BASE_URL: https://pr-${{ github.event.number }}--${{ vars.NETLIFY_SITE_NAME }}.netlify.app
           TEST_USERNAME: ${{ vars.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+
+  migrate:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: production-migration
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - name: Run migrations
+        run: bun run migrate
+        env:
+          DATABASE_URL_MIGRATE: ${{ secrets.DATABASE_URL_MIGRATE }}
 
   deploy-prod:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

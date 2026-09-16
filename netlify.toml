@@ -7,7 +7,6 @@
   BUN_VERSION = "1.1.38"
 
 [functions]
-  node_bundler = "esbuild"
   included_files = ["drizzle/**"]
 
 [[headers]]
