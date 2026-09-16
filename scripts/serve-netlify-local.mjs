@@ -52,7 +52,11 @@ const server = createServer(async (req, res) => {
 
   // Fall through to the lambda handler
   const bodyBuf = await readBody(req)
-  const bodyStr = bodyBuf.length ? bodyBuf.toString('base64') : undefined
+  const contentType = req.headers['content-type'] || ''
+  const isText = contentType.startsWith('application/json') || contentType.startsWith('text/')
+  const bodyStr = bodyBuf.length
+    ? (isText ? bodyBuf.toString('utf-8') : bodyBuf.toString('base64'))
+    : undefined
 
   const event = {
     path: pathname,
@@ -62,7 +66,7 @@ const server = createServer(async (req, res) => {
     queryStringParameters: Object.fromEntries(url.searchParams),
     multiValueQueryStringParameters: {},
     body: bodyStr || null,
-    isBase64Encoded: !!bodyStr,
+    isBase64Encoded: bodyBuf.length > 0 && !isText,
   }
 
   try {
