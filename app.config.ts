@@ -56,5 +56,10 @@ export default defineConfig({
         '~': new URL('./app', import.meta.url).pathname,
       },
     },
+    define: {
+      // Enables nitro's AsyncLocalStorage context wrapping so useSession()
+      // can be called without an explicit H3Event argument.
+      'import.meta._asyncContext': 'true',
+    },
   },
 })

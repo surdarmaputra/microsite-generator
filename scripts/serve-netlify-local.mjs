@@ -2,8 +2,16 @@
 // Wraps the netlify Lambda handler in a local HTTP server for CI e2e testing.
 // Usage: node scripts/serve-netlify-local.mjs
 import { createServer } from 'node:http'
-import { createReadStream, existsSync, statSync } from 'node:fs'
+import { createReadStream, existsSync, statSync, appendFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+
+const LOG_FILE = process.env.SERVE_LOG || '/tmp/serve-debug.log'
+
+function log(...args) {
+  const line = `[${new Date().toISOString()}] ${args.join(' ')}\n`
+  process.stderr.write(line)
+  try { appendFileSync(LOG_FILE, line) } catch {}
+}
 
 const { handler } = await import('../.netlify/functions-internal/server/server.mjs')
 
@@ -69,6 +77,11 @@ const server = createServer(async (req, res) => {
     isBase64Encoded: bodyBuf.length > 0 && !isText,
   }
 
+  log(`REQ ${req.method} ${pathname} content-type=${contentType} body-len=${bodyBuf.length} isBase64=${event.isBase64Encoded}`)
+  if (bodyBuf.length > 0 && isText) {
+    log(`REQ BODY ${bodyStr?.slice(0, 500)}`)
+  }
+
   try {
     const result = await handler(event, {})
     const headers = { ...result.headers }
@@ -77,6 +90,7 @@ const server = createServer(async (req, res) => {
         headers[k] = v
       }
     }
+    log(`RES ${result.statusCode || 200} set-cookie=${headers['set-cookie'] || headers['Set-Cookie'] || 'none'}`)
     res.writeHead(result.statusCode || 200, headers)
     if (result.isBase64Encoded && result.body) {
       res.end(Buffer.from(result.body, 'base64'))
@@ -84,6 +98,7 @@ const server = createServer(async (req, res) => {
       res.end(result.body || '')
     }
   } catch (err) {
+    log(`ERR ${err.message}\n${err.stack}`)
     console.error('Handler error:', err)
     res.writeHead(500)
     res.end('Internal Server Error')

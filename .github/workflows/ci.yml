@@ -81,6 +81,9 @@ jobs:
           BASE_URL: http://localhost:3000
           TEST_USERNAME: admin
         run: bun run test:e2e
+      - name: Dump server debug log
+        if: always()
+        run: cat /tmp/serve-debug.log 2>/dev/null || echo "(no server log)"
 
   coverage:
     runs-on: ubuntu-latest
