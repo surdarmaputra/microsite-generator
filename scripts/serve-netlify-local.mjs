@@ -90,7 +90,10 @@ const server = createServer(async (req, res) => {
         headers[k] = v
       }
     }
-    log(`RES ${result.statusCode || 200} set-cookie=${headers['set-cookie'] || headers['Set-Cookie'] || 'none'}`)
+    log(`RES ${result.statusCode || 200} set-cookie=${headers['set-cookie'] || headers['Set-Cookie'] || 'none'} content-type=${headers['content-type'] || 'none'}`)
+    if (result.body && !result.isBase64Encoded && pathname.startsWith('/_server')) {
+      log(`RES BODY ${result.body.slice(0, 500)}`)
+    }
     res.writeHead(result.statusCode || 200, headers)
     if (result.isBase64Encoded && result.body) {
       res.end(Buffer.from(result.body, 'base64'))
