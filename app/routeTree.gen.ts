@@ -8,50 +8,132 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as SlugRouteImport } from './routes/$slug'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as AdminEditorIdRouteImport } from './routes/admin/editor.$id'
-import { Route as AdminPreviewIdRouteImport } from './routes/admin/preview.$id'
+// Import Routes
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SlugRoute = SlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
+import { Route as rootRoute } from './routes/__root'
+import { Route as LoginImport } from './routes/login'
+import { Route as AdminImport } from './routes/admin'
+import { Route as SlugImport } from './routes/$slug'
+import { Route as IndexImport } from './routes/index'
+import { Route as AdminIndexImport } from './routes/admin/index'
+import { Route as AdminPreviewIdImport } from './routes/admin/preview.$id'
+import { Route as AdminEditorIdImport } from './routes/admin/editor.$id'
+
+// Create/Update Routes
+
+const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRoute,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
+
+const AdminRoute = AdminImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SlugRoute = SlugImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminIndexRoute = AdminIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminEditorIdRoute = AdminEditorIdRouteImport.update({
-  id: '/editor/$id',
-  path: '/editor/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPreviewIdRoute = AdminPreviewIdRouteImport.update({
+
+const AdminPreviewIdRoute = AdminPreviewIdImport.update({
   id: '/preview/$id',
   path: '/preview/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+
+const AdminEditorIdRoute = AdminEditorIdImport.update({
+  id: '/editor/$id',
+  path: '/editor/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+// Populate the FileRoutesByPath interface
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminImport
+      parentRoute: typeof rootRoute
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexImport
+      parentRoute: typeof AdminImport
+    }
+    '/admin/editor/$id': {
+      id: '/admin/editor/$id'
+      path: '/editor/$id'
+      fullPath: '/admin/editor/$id'
+      preLoaderRoute: typeof AdminEditorIdImport
+      parentRoute: typeof AdminImport
+    }
+    '/admin/preview/$id': {
+      id: '/admin/preview/$id'
+      path: '/preview/$id'
+      fullPath: '/admin/preview/$id'
+      preLoaderRoute: typeof AdminPreviewIdImport
+      parentRoute: typeof AdminImport
+    }
+  }
+}
+
+// Create and export the route tree
+
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminEditorIdRoute: typeof AdminEditorIdRoute
+  AdminPreviewIdRoute: typeof AdminPreviewIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminEditorIdRoute: AdminEditorIdRoute,
+  AdminPreviewIdRoute: AdminPreviewIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -62,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/admin/editor/$id': typeof AdminEditorIdRoute
   '/admin/preview/$id': typeof AdminPreviewIdRoute
 }
+
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
@@ -70,8 +153,9 @@ export interface FileRoutesByTo {
   '/admin/editor/$id': typeof AdminEditorIdRoute
   '/admin/preview/$id': typeof AdminPreviewIdRoute
 }
+
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
+  __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/admin': typeof AdminRouteWithChildren
@@ -80,6 +164,7 @@ export interface FileRoutesById {
   '/admin/editor/$id': typeof AdminEditorIdRoute
   '/admin/preview/$id': typeof AdminPreviewIdRoute
 }
+
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
@@ -109,6 +194,7 @@ export interface FileRouteTypes {
     | '/admin/preview/$id'
   fileRoutesById: FileRoutesById
 }
+
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRoute
@@ -116,80 +202,58 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$slug': {
-      id: '/$slug'
-      path: '/$slug'
-      fullPath: '/$slug'
-      preLoaderRoute: typeof SlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/editor/$id': {
-      id: '/admin/editor/$id'
-      path: '/editor/$id'
-      fullPath: '/admin/editor/$id'
-      preLoaderRoute: typeof AdminEditorIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/preview/$id': {
-      id: '/admin/preview/$id'
-      path: '/preview/$id'
-      fullPath: '/admin/preview/$id'
-      preLoaderRoute: typeof AdminPreviewIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-  }
-}
-
-interface AdminRouteChildren {
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminEditorIdRoute: typeof AdminEditorIdRoute
-  AdminPreviewIdRoute: typeof AdminPreviewIdRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminIndexRoute: AdminIndexRoute,
-  AdminEditorIdRoute: AdminEditorIdRoute,
-  AdminPreviewIdRoute: AdminPreviewIdRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
   AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
 }
-export const routeTree = rootRouteImport
+
+export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/",
+        "/$slug",
+        "/admin",
+        "/login"
+      ]
+    },
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/$slug": {
+      "filePath": "$slug.tsx"
+    },
+    "/admin": {
+      "filePath": "admin.tsx",
+      "children": [
+        "/admin/",
+        "/admin/editor/$id",
+        "/admin/preview/$id"
+      ]
+    },
+    "/login": {
+      "filePath": "login.tsx"
+    },
+    "/admin/": {
+      "filePath": "admin/index.tsx",
+      "parent": "/admin"
+    },
+    "/admin/editor/$id": {
+      "filePath": "admin/editor.$id.tsx",
+      "parent": "/admin"
+    },
+    "/admin/preview/$id": {
+      "filePath": "admin/preview.$id.tsx",
+      "parent": "/admin"
+    }
+  }
+}
+ROUTE_MANIFEST_END */
