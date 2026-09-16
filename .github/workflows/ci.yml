@@ -32,7 +32,6 @@ jobs:
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/microsite_test?sslmode=disable
       DATABASE_URL_MIGRATE: postgres://postgres:postgres@localhost:5432/microsite_test
-      ADMIN_USERS: admin:${{ secrets.TEST_ADMIN_HASH }}
       SESSION_SECRET: test-secret-32-chars-minimum-xxxx
       S3_ENDPOINT: http://localhost:9000
       S3_REGION: us-east-1
@@ -44,6 +43,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
+      - name: Generate test credentials
+        run: |
+          TEST_PASS="test-password-ci"
+          TEST_HASH=$(bun scripts/hash-password.ts "$TEST_PASS")
+          echo "ADMIN_USERS=admin:${TEST_HASH}" >> $GITHUB_ENV
+          echo "TEST_PASSWORD=${TEST_PASS}" >> $GITHUB_ENV
       - name: Start MinIO
         run: |
           docker run -d --name minio \
@@ -75,7 +80,6 @@ jobs:
         env:
           BASE_URL: http://localhost:3000
           TEST_USERNAME: admin
-          TEST_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
         run: bun run test:e2e
 
   coverage:
