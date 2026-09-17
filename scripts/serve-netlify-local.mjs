@@ -98,7 +98,18 @@ const server = createServer(async (req, res) => {
     if (result.isBase64Encoded && result.body) {
       res.end(Buffer.from(result.body, 'base64'))
     } else {
-      res.end(result.body || '')
+      let responseBody = result.body || ''
+      if (responseBody && typeof responseBody !== 'string' && typeof responseBody.getReader === 'function') {
+        const reader = responseBody.getReader()
+        const chunks = []
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          chunks.push(value instanceof Uint8Array ? value : Buffer.from(String(value)))
+        }
+        responseBody = Buffer.concat(chunks).toString('utf-8')
+      }
+      res.end(responseBody)
     }
   } catch (err) {
     log(`ERR ${err.message}\n${err.stack}`)
