@@ -13,7 +13,7 @@ async function login(page: import('@playwright/test').Page) {
 }
 
 async function createSite(page: import('@playwright/test').Page, name: string, slug: string) {
-  await page.getByRole('button', { name: /new site/i }).click()
+  await page.getByRole('button', { name: /new site/i }).first().click()
   const dialog = page.getByRole('dialog')
   await dialog.getByLabel('Name').fill(name)
   await dialog.getByLabel('Slug').fill(slug)
