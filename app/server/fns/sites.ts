@@ -70,7 +70,7 @@ export const createSiteFn = createServerFn({ method: 'POST' })
     const [site] = await db.insert(microsites).values({
       name: data.name,
       slug: data.slug,
-      draftDoc: emptyDoc(),
+      draftDoc: { ...emptyDoc(), meta: { ...emptyDoc().meta, title: data.name } },
       draftVersion: 1,
     }).returning()
     return site!

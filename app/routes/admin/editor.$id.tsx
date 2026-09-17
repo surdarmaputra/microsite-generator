@@ -1,5 +1,5 @@
 'use client'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getSiteFn, saveDraftFn, publishFn } from '~/server/fns/sites'
 import { BlockStack } from '~/components/editor/BlockStack'
@@ -28,6 +28,7 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 function EditorPage() {
   const site = Route.useLoaderData()
   const { id } = Route.useParams()
+  const router = useRouter()
 
   const initialDoc: Doc = (site.draftDoc as Doc) ?? emptyDoc()
 
@@ -89,6 +90,7 @@ function EditorPage() {
     try {
       await publishFn({ data: { id } })
       setPublishOpen(false)
+      await router.invalidate()
     } finally {
       setPublishing(false)
     }

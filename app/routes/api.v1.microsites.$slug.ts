@@ -1,10 +1,17 @@
 import { createAPIFileRoute } from '@tanstack/start/api'
-import { getLiveDocFn } from '~/server/fns/sites'
+import { eq } from 'drizzle-orm'
+import { db } from '~/server/db'
+import { microsites } from '~/server/db/schema'
 import { notFoundCacheHeaders, apiCacheHeaders } from '~/lib/cache'
 
 export const APIRoute = createAPIFileRoute('/api/v1/microsites/$slug')({
   GET: async ({ params }) => {
-    const site = await getLiveDocFn({ data: { slug: params.slug } })
+    // Query directly rather than via a server function: server functions need a
+    // request context that API route handlers do not provide.
+    const [site] = await db
+      .select({ liveDoc: microsites.liveDoc })
+      .from(microsites)
+      .where(eq(microsites.slug, params.slug))
 
     if (!site || !site.liveDoc) {
       return new Response(JSON.stringify({ error: 'Not found' }), {
