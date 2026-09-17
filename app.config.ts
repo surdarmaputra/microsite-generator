@@ -48,6 +48,9 @@ export default defineConfig({
     experimental: {
       asyncContext: true,
     },
+    externals: {
+      inline: ['sanitize-html'],
+    },
   },
   vite: {
     plugins: [tailwindcss(), nodeBuiltinsBrowserShim()],

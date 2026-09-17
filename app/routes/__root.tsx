@@ -15,7 +15,7 @@ function CssLinks() {
   const assets = (router.ssr as any)?.manifest?.routes.__root__?.assets ?? []
   return assets
     .filter((a: any) => a.tag === 'link' && a.attrs?.rel === 'stylesheet')
-    .map((a: any) => <link key={a.attrs.href} {...a.attrs} />)
+    .map((a: any) => { const { key, ...rest } = a.attrs; return <link key={key ?? rest.href} {...rest} /> })
 }
 
 function RootComponent() {
