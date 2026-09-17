@@ -1,6 +1,8 @@
-import { createFileRoute, Outlet, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect, useRouter, useLocation } from '@tanstack/react-router'
 import { getAuthFn, logoutFn } from '~/server/fns/auth'
 import { ToastProvider } from '~/components/ui/Toast'
+import { LogOut, LayoutGrid } from 'lucide-react'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: async () => {
@@ -18,30 +20,70 @@ export const Route = createFileRoute('/admin')({
 
 function AdminLayout() {
   const router = useRouter()
+  const location = useLocation()
   const { username } = Route.useRouteContext()
+
+  const isPreview = location.pathname.startsWith('/admin/preview/')
 
   const handleLogout = async () => {
     await logoutFn()
     await router.navigate({ to: '/login' })
   }
 
+  if (isPreview) {
+    return <Outlet />
+  }
+
+  const initials = username.slice(0, 2).toUpperCase()
+
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-gray-50" style={{ maxWidth: 'none' }}>
-        <header className="border-b border-gray-200 bg-white px-6 py-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-900">Microsite Generator</span>
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-400">{username}</span>
+      <div className="bg-surface-page min-h-screen">
+        <header className="bg-surface-page border-hairline sticky top-0 z-20 flex h-14 items-center gap-3 border-b px-6">
+          <a
+            href="/admin"
+            className="flex items-center gap-2 transition-opacity hover:opacity-70"
+          >
+            <span className="rounded-control bg-accent text-paper grid size-7 place-items-center">
+              <LayoutGrid size={14} />
+            </span>
+            <span className="font-display text-caption tracking-[-0.022em] font-semibold text-ink-primary">
+              Microsite
+            </span>
+          </a>
+
+          <div className="flex-1" />
+
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
               <button
-                onClick={handleLogout}
-                className="text-xs text-gray-500 hover:text-gray-900"
+                type="button"
+                aria-label="Account menu"
+                className="rounded-control hover:bg-surface-hover flex items-center gap-2 px-2 py-1.5 transition-colors"
               >
-                Logout
+                <span className="bg-surface-hover text-micro text-ink-primary grid size-7 place-items-center rounded-full font-semibold border border-hairline">
+                  {initials}
+                </span>
+                <span className="text-caption text-ink-secondary hidden sm:block">{username}</span>
               </button>
-            </div>
-          </div>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                align="end"
+                sideOffset={4}
+                className="rounded-card border-hairline bg-surface-card shadow-card z-50 min-w-36 border p-1"
+              >
+                <DropdownMenu.Item
+                  onSelect={handleLogout}
+                  className="rounded-control text-caption text-danger hover:bg-danger/10 flex cursor-default items-center gap-2 px-3 py-2 transition-colors outline-none"
+                >
+                  <LogOut size={14} /> Sign out
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </header>
+
         <main className="p-6">
           <Outlet />
         </main>

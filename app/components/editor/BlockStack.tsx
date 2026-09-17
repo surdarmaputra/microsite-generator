@@ -24,7 +24,7 @@ const defaultBlock = (type: BlockType): Block => {
   if (type === 'hero') return { id, type, layout, props: { variant: 'banner' }, html: '' }
   if (type === 'card') return { id, type, layout, html: '' }
   if (type === 'trimmed') return { id, type, layout, html: '' }
-  return { id, type: 'cta', layout, props: { label: '', href: '', newTab: false } }
+  return { id, type: 'cta', layout, props: { label: '', href: '', newTab: false, variant: 'solid' as const } }
 }
 
 export function BlockStack({ blocks, onChange }: Props) {
@@ -89,13 +89,15 @@ export function BlockStack({ blocks, onChange }: Props) {
 
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
         <DialogContent>
-          <DialogTitle>Add block</DialogTitle>
+          <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
+            Add block
+          </DialogTitle>
           <div className="mt-4 grid grid-cols-2 gap-2">
             {(['hero', 'card', 'trimmed', 'cta'] as BlockType[]).map(type => (
               <button
                 key={type}
                 onClick={() => addBlock(type)}
-                className="rounded-xl border border-gray-200 p-4 text-left text-sm font-medium hover:bg-gray-50 capitalize"
+                className="rounded-card border-hairline bg-surface-card hover:bg-surface-hover text-caption font-medium text-ink-primary border p-4 text-left capitalize transition-colors"
               >
                 {type}
               </button>

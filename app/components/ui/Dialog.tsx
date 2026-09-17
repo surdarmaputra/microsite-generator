@@ -1,5 +1,6 @@
 'use client'
 import * as RadixDialog from '@radix-ui/react-dialog'
+import { X } from 'lucide-react'
 import { cn } from './cn'
 
 export const Dialog = RadixDialog.Root
@@ -14,10 +15,12 @@ export function DialogContent({
 }: RadixDialog.DialogContentProps) {
   return (
     <RadixDialog.Portal>
-      <RadixDialog.Overlay className="fixed inset-0 z-50 bg-black/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+      <RadixDialog.Overlay className="bg-midnight-ink/50 fixed inset-0 z-50 data-[state=closed]:animate-[overlay-hide_200ms_ease-in_forwards] data-[state=open]:animate-[overlay-show_200ms_ease-out]" />
       <RadixDialog.Content
         className={cn(
-          'fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl focus:outline-none',
+          'rounded-card border-hairline fixed inset-x-4 bottom-4 z-50 border bg-surface-card shadow-raised',
+          'sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-full sm:max-w-md sm:-translate-x-1/2 sm:-translate-y-1/2',
+          'data-[state=closed]:animate-[modal-hide_200ms_ease-in_forwards] data-[state=open]:animate-[modal-show_200ms_ease-out]',
           className
         )}
         {...props}
@@ -28,8 +31,33 @@ export function DialogContent({
   )
 }
 
+export function DialogHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-start gap-4 p-6 pb-0">
+      <div className="min-w-0 flex-1">{children}</div>
+    </div>
+  )
+}
+
+export function DialogBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('p-6', className)} {...props} />
+}
+
 export function DialogFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('mt-6 flex justify-end gap-2', className)} {...props} />
+    <div className={cn('border-hairline flex justify-end gap-2 border-t p-4', className)} {...props} />
+  )
+}
+
+export function DialogCloseButton({ onClose }: { onClose: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClose}
+      aria-label="Close dialog"
+      className="rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 shrink-0 place-items-center transition-colors"
+    >
+      <X size={16} />
+    </button>
   )
 }

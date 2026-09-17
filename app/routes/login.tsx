@@ -1,10 +1,12 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { loginFn } from '~/server/fns/auth'
+import { Button } from '~/components/ui/Button'
+import { Input } from '~/components/ui/Input'
 
 export const Route = createFileRoute('/login')({
   head: () => ({
-    meta: [{ title: 'Login' }],
+    meta: [{ title: 'Sign in · Microsite Generator' }],
   }),
   headers: () => ({
     'Cache-Control': 'no-store',
@@ -38,50 +40,49 @@ function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-2xl bg-[var(--color-surface)] p-8 shadow-sm">
-        <h1 className="mb-6 text-xl font-semibold text-gray-900">Sign in</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="username" className="text-sm font-medium text-gray-700">
-              Username
-            </label>
-            <input
+    <div className="bg-surface-sidebar flex min-h-screen flex-col items-center justify-center p-6">
+      <main className="w-full max-w-sm">
+        <div className="mb-8 flex items-center justify-center gap-2">
+          <span className="rounded-control bg-accent text-paper grid size-8 place-items-center">
+            <span className="text-caption font-semibold">M</span>
+          </span>
+          <span className="font-display text-subheading tracking-[-0.022em] font-semibold text-ink-primary">
+            Microsite
+          </span>
+        </div>
+
+        <div className="rounded-card border-hairline bg-surface-card shadow-raised border p-6">
+          <h1 className="font-display text-title tracking-[-0.022em] font-semibold text-ink-primary">
+            Sign in
+          </h1>
+          <p className="text-caption text-ink-secondary mt-1">Welcome back. Enter your details.</p>
+
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+            <Input
+              label="Username"
               id="username"
               type="text"
               autoComplete="username"
               value={username}
               onChange={e => setUsername(e.target.value)}
               required
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
+            <Input
+              label="Password"
               id="password"
               type="password"
               autoComplete="current-password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
-          {error && (
-            <p className="text-sm text-red-600">{error}</p>
-          )}
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 rounded-full bg-blue-600 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-60 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            {loading ? 'Signing in…' : 'Sign in'}
-          </button>
-        </form>
-      </div>
+            {error && <p className="text-caption text-danger">{error}</p>}
+            <Button type="submit" disabled={loading} className="mt-2 w-full">
+              {loading ? 'Signing in…' : 'Sign in'}
+            </Button>
+          </form>
+        </div>
+      </main>
     </div>
   )
 }

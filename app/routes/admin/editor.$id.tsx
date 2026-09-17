@@ -109,20 +109,20 @@ function EditorPage() {
     : ''
 
   return (
-    <div className="flex h-screen flex-col" style={{ maxWidth: 'none' }}>
+    <div className="flex h-screen flex-col bg-surface-page" style={{ maxWidth: 'none' }}>
       {conflictBanner && (
-        <div className="bg-yellow-50 border-b border-yellow-200 px-6 py-2 text-sm text-yellow-800">
+        <div className="bg-warning/10 border-b border-warning/20 px-6 py-2 text-caption text-warning">
           Edited in another tab — please reload.
         </div>
       )}
 
-      <div className="flex items-center gap-3 border-b border-gray-200 bg-white px-6 py-3">
-        <a href="/admin" className="text-sm text-gray-500 hover:text-gray-900">← Sites</a>
-        <span className="text-gray-300">/</span>
-        <span className="text-sm font-medium text-gray-900">{site.name}</span>
+      <div className="border-hairline flex items-center gap-3 border-b bg-surface-card px-6 py-3">
+        <a href="/admin" className="text-caption text-ink-secondary hover:text-ink-primary transition-colors">← Sites</a>
+        <span className="text-ink-secondary opacity-40">/</span>
+        <span className="text-caption font-medium text-ink-primary">{site.name}</span>
         <StatusBadge status={status} />
         {saveLabel && (
-          <span className={`ml-auto text-xs ${saveState === 'error' ? 'text-red-500' : 'text-gray-400'}`}>
+          <span className={`ml-auto text-micro ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
             {saveLabel}
           </span>
         )}
@@ -137,8 +137,8 @@ function EditorPage() {
 
       <div className="flex flex-1 overflow-hidden">
         <div className="flex w-3/5 flex-col gap-4 overflow-y-auto p-6">
-          <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4">
-            <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500">Meta</h3>
+          <div className="rounded-card border-hairline bg-surface-card flex flex-col gap-3 border p-4">
+            <h3 className="text-micro font-semibold uppercase tracking-widest text-ink-secondary">Meta</h3>
             <Input
               label="Title"
               value={doc.meta.title}
@@ -146,13 +146,13 @@ function EditorPage() {
               placeholder="Page title"
             />
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Description</label>
+              <label className="text-caption font-medium text-ink-primary">Description</label>
               <textarea
                 value={doc.meta.description}
                 onChange={e => handleMetaChange({ ...doc.meta, description: e.target.value })}
                 placeholder="Page description"
                 rows={2}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="rounded-control border-hairline bg-surface-card text-caption text-ink-primary placeholder:text-ink-secondary w-full border px-3 py-2 transition-colors focus:outline-none focus:ring-1 focus:ring-accent/50"
               />
             </div>
           </div>
@@ -160,10 +160,10 @@ function EditorPage() {
           <BlockStack blocks={doc.blocks} onChange={handleBlocksChange} />
         </div>
 
-        <div className="flex w-2/5 flex-col items-center border-l border-gray-200 bg-gray-100 p-6">
-          <div className="text-xs text-gray-400 mb-3">Preview (390px)</div>
+        <div className="border-hairline bg-surface-sidebar flex w-2/5 flex-col items-center border-l p-6">
+          <div className="text-micro text-ink-secondary mb-3">Preview (390px)</div>
           <div
-            className="overflow-hidden rounded-2xl shadow-xl"
+            className="rounded-card overflow-hidden shadow-raised"
             style={{ width: 390, height: '80vh' }}
           >
             <iframe
@@ -178,8 +178,10 @@ function EditorPage() {
 
       <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
         <DialogContent>
-          <DialogTitle>Publish site</DialogTitle>
-          <DialogDescription className="mt-2 text-sm text-gray-600">
+          <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
+            Publish site
+          </DialogTitle>
+          <DialogDescription className="text-caption text-ink-secondary mt-2">
             Are you sure you want to publish? This will make the site publicly visible.
           </DialogDescription>
           <DialogFooter>

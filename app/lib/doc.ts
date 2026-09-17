@@ -44,6 +44,7 @@ export const CtaBlockSchema = z.object({
     label: z.string(),
     href: z.string(),
     newTab: z.boolean(),
+    variant: z.enum(['solid', 'outline', 'glass']).default('solid'),
   }),
 })
 

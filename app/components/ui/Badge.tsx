@@ -1,20 +1,20 @@
 'use client'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from './cn'
+import * as React from 'react'
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+  'inline-flex items-center rounded-full px-2 py-0.5 text-micro font-medium',
   {
     variants: {
       variant: {
-        draft: 'bg-gray-100 text-gray-700',
-        published: 'bg-green-100 text-green-700',
-        'unpublished-changes': 'bg-yellow-100 text-yellow-700',
+        draft: 'bg-surface-hover text-ink-secondary',
+        published: 'bg-success/10 text-success',
+        'unpublished-changes': 'bg-warning/10 text-warning',
+        default: 'bg-surface-hover text-ink-secondary',
       },
     },
-    defaultVariants: {
-      variant: 'draft',
-    },
+    defaultVariants: { variant: 'default' },
   }
 )
 

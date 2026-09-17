@@ -1,43 +1,35 @@
 'use client'
 import * as RadixSelect from '@radix-ui/react-select'
+import { ChevronDown } from 'lucide-react'
 import { cn } from './cn'
 
 export const Select = RadixSelect.Root
 export const SelectValue = RadixSelect.Value
 
-export function SelectTrigger({
-  className,
-  children,
-  ...props
-}: RadixSelect.SelectTriggerProps) {
+export function SelectTrigger({ className, children, ...props }: RadixSelect.SelectTriggerProps) {
   return (
     <RadixSelect.Trigger
       className={cn(
-        'inline-flex h-9 items-center justify-between rounded-lg border border-gray-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 gap-2',
+        'inline-flex h-9 items-center justify-between gap-2 rounded-control border border-hairline bg-surface-card px-3 text-caption text-ink-primary',
+        'transition-colors hover:bg-surface-hover disabled:opacity-60',
         className
       )}
       {...props}
     >
       {children}
-      <RadixSelect.Icon>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+      <RadixSelect.Icon asChild>
+        <ChevronDown size={14} className="text-ink-secondary shrink-0" />
       </RadixSelect.Icon>
     </RadixSelect.Trigger>
   )
 }
 
-export function SelectContent({
-  className,
-  children,
-  ...props
-}: RadixSelect.SelectContentProps) {
+export function SelectContent({ className, children, ...props }: RadixSelect.SelectContentProps) {
   return (
     <RadixSelect.Portal>
       <RadixSelect.Content
         className={cn(
-          'z-50 min-w-[8rem] rounded-lg border border-gray-100 bg-white p-1 shadow-md',
+          'z-50 min-w-[8rem] rounded-card border border-hairline bg-surface-card p-1 shadow-card',
           className
         )}
         position="popper"
@@ -50,15 +42,12 @@ export function SelectContent({
   )
 }
 
-export function SelectItem({
-  className,
-  children,
-  ...props
-}: RadixSelect.SelectItemProps) {
+export function SelectItem({ className, children, ...props }: RadixSelect.SelectItemProps) {
   return (
     <RadixSelect.Item
       className={cn(
-        'relative flex cursor-default select-none items-center rounded-md px-2 py-1.5 text-sm text-gray-700 outline-none data-[highlighted]:bg-gray-100 data-[state=checked]:font-medium',
+        'relative flex cursor-default select-none items-center rounded-control px-2 py-1.5 text-caption text-ink-primary outline-none',
+        'data-[highlighted]:bg-surface-hover data-[state=checked]:font-medium',
         className
       )}
       {...props}

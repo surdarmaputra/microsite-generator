@@ -3,7 +3,6 @@ import type { Block } from '~/lib/doc'
 import { LayoutControls } from './LayoutControls'
 import { LexicalEditor } from './LexicalEditor'
 import { Badge } from '~/components/ui/Badge'
-import { Button } from '~/components/ui/Button'
 import { Input } from '~/components/ui/Input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/Select'
 
@@ -16,12 +15,12 @@ interface Props {
 
 export function BlockCard({ block, onChange, onDelete, dragHandleProps }: Props) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2">
+    <div className="rounded-card border-hairline bg-surface-card border">
+      <div className="border-hairline flex items-center gap-2 border-b px-3 py-2">
         <Badge variant="draft">{block.type}</Badge>
         <div
           {...dragHandleProps}
-          className="ml-1 cursor-grab text-gray-400 hover:text-gray-600 active:cursor-grabbing"
+          className="ml-1 cursor-grab text-ink-secondary hover:text-ink-primary active:cursor-grabbing transition-colors"
           title="Drag to reorder"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -31,17 +30,15 @@ export function BlockCard({ block, onChange, onDelete, dragHandleProps }: Props)
             <circle cx="10" cy="10" r="1.2" fill="currentColor" />
           </svg>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="ml-auto h-7 w-7 p-0 text-gray-400 hover:text-red-600"
+        <button
+          className="rounded-control ml-auto grid size-7 place-items-center text-ink-secondary hover:bg-danger/10 hover:text-danger transition-colors"
           onClick={onDelete}
           title="Delete block"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
-        </Button>
+        </button>
       </div>
 
       <div className="flex flex-col gap-3 p-3">
@@ -92,6 +89,21 @@ export function BlockCard({ block, onChange, onDelete, dragHandleProps }: Props)
 
         {block.type === 'cta' && (
           <div className="flex flex-col gap-2">
+            <Select
+              value={block.props.variant ?? 'solid'}
+              onValueChange={v =>
+                onChange({ ...block, props: { ...block.props, variant: v as 'solid' | 'outline' | 'glass' } })
+              }
+            >
+              <SelectTrigger className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="solid">Solid</SelectItem>
+                <SelectItem value="outline">Outline</SelectItem>
+                <SelectItem value="glass">Glass</SelectItem>
+              </SelectContent>
+            </Select>
             <Input
               label="Label"
               value={block.props.label}
@@ -105,12 +117,12 @@ export function BlockCard({ block, onChange, onDelete, dragHandleProps }: Props)
               onChange={e => onChange({ ...block, props: { ...block.props, href: e.target.value } })}
               placeholder="https://…"
             />
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className="flex items-center gap-2 text-caption text-ink-primary cursor-pointer">
               <input
                 type="checkbox"
                 checked={block.props.newTab}
                 onChange={e => onChange({ ...block, props: { ...block.props, newTab: e.target.checked } })}
-                className="rounded border-gray-300"
+                className="rounded border-hairline accent-accent"
               />
               Open in new tab
             </label>
