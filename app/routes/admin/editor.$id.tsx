@@ -46,6 +46,8 @@ function EditorPage() {
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const versionRef = useRef(version)
   versionRef.current = version
+  const docRef = useRef(doc)
+  docRef.current = doc
 
   const handleDocChange = useCallback((next: Doc) => {
     setDoc(next)
@@ -65,6 +67,21 @@ function EditorPage() {
         setSaveState('error')
       }
     }, 2000)
+  }, [id])
+
+  const handleSave = useCallback(async () => {
+    if (saveTimer.current) clearTimeout(saveTimer.current)
+    setSaveState('saving')
+    try {
+      const result = await saveDraftFn({ data: { id, doc: docRef.current, version: versionRef.current } })
+      setVersion(result.version)
+      versionRef.current = result.version
+      setSaveState('saved')
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : ''
+      if (msg.includes('409')) setConflictBanner(true)
+      setSaveState('error')
+    }
   }, [id])
 
   const handleBlocksChange = (blocks: Block[]) => {
@@ -106,33 +123,43 @@ function EditorPage() {
         </div>
       )}
 
-      <div className="border-hairline flex items-center gap-3 border-b bg-surface-card px-6 py-3">
-        <a href="/admin" className="text-caption text-ink-secondary hover:text-ink-primary transition-colors">← Sites</a>
-        <span className="text-ink-secondary opacity-40">/</span>
-        <span className="text-caption font-medium text-ink-primary">{site.name}</span>
-        <StatusBadge status={status} />
-        {saveLabel && (
-          <span className={`ml-auto text-micro ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
-            {saveLabel}
-          </span>
-        )}
-        {!!site.publishedAt && (
-          <a
-            href={`/${site.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`cursor-pointer inline-flex items-center gap-1.5 text-caption text-ink-secondary hover:text-ink-primary transition-colors ${saveLabel ? '' : 'ml-auto'}`}
+      {/* Header */}
+      <div className="border-hairline flex flex-wrap items-center gap-x-3 gap-y-2 border-b bg-surface-card px-4 py-3">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <a href="/admin" className="text-caption text-ink-secondary hover:text-ink-primary transition-colors shrink-0">← Sites</a>
+          <span className="text-ink-secondary opacity-40 shrink-0">/</span>
+          <span className="text-caption font-medium text-ink-primary truncate">{site.name}</span>
+          <StatusBadge status={status} />
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {saveLabel && (
+            <span className={`text-micro ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
+              {saveLabel}
+            </span>
+          )}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleSave}
+            disabled={saveState === 'saving'}
           >
-            <ExternalLink size={13} /> View site
-          </a>
-        )}
-        <Button
-          size="sm"
-          className={saveLabel || !!site.publishedAt ? '' : 'ml-auto'}
-          onClick={() => setPublishOpen(true)}
-        >
-          Publish
-        </Button>
+            Save
+          </Button>
+          {!!site.publishedAt && (
+            <a
+              href={`/${site.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer inline-flex items-center gap-1.5 text-caption text-ink-secondary hover:text-ink-primary transition-colors"
+            >
+              <ExternalLink size={13} />
+              <span className="hidden sm:inline">View site</span>
+            </a>
+          )}
+          <Button size="sm" onClick={() => setPublishOpen(true)}>
+            Publish
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
@@ -149,13 +176,10 @@ function EditorPage() {
         <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6">
           <div className="text-micro text-ink-secondary mb-3">Preview (390px)</div>
           <div
-            className="rounded-card overflow-hidden shadow-raised w-full max-w-[390px]"
-            style={{ height: '80vh' }}
+            className="rounded-card shadow-raised w-full max-w-[390px] overflow-y-auto"
+            style={{ height: '80vh', background: 'white' }}
           >
-            <div
-              className="public-page overflow-y-auto w-full"
-              style={{ height: '100%', background: 'white' }}
-            >
+            <div className="public-page w-full">
               {doc.blocks.map(block => (
                 <BlockRenderer key={block.id} block={block} isPreview />
               ))}
