@@ -1,4 +1,4 @@
-import { createRootRoute, Outlet, HeadContent, Scripts, ScrollRestoration } from '@tanstack/react-router'
+import { createRootRoute, Outlet, HeadContent, Scripts, ScrollRestoration, useRouter } from '@tanstack/react-router'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -10,10 +10,19 @@ export const Route = createRootRoute({
   component: RootComponent,
 })
 
+function CssLinks() {
+  const router = useRouter()
+  const assets = (router.ssr as any)?.manifest?.routes.__root__?.assets ?? []
+  return assets
+    .filter((a: any) => a.tag === 'link' && a.attrs?.rel === 'stylesheet')
+    .map((a: any) => <link key={a.attrs.href} {...a.attrs} />)
+}
+
 function RootComponent() {
   return (
     <html lang="en">
       <head>
+        <CssLinks />
         <HeadContent />
       </head>
       <body>
