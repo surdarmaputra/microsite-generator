@@ -59,10 +59,14 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - name: Run migrations
-        if: ${{ secrets.DATABASE_URL_MIGRATE != '' }}
         env:
           DATABASE_URL_MIGRATE: ${{ secrets.DATABASE_URL_MIGRATE }}
-        run: bun run migrate
+        run: |
+          if [ -n "$DATABASE_URL_MIGRATE" ]; then
+            bun run migrate
+          else
+            echo "Skipping migration: DATABASE_URL_MIGRATE not set in this context"
+          fi
       - name: Build
         run: bun run build
         env:
