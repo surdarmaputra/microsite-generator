@@ -11,7 +11,7 @@
   included_files = ["drizzle/**"]
 
 [images]
-  remote_images = ["https://*.supabase.co/**"]
+  remote_images = ['https://[^.]+\.supabase\.co/.*']
 
 [[headers]]
   for = "/admin/*"
