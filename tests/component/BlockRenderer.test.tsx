@@ -102,7 +102,7 @@ describe('BlockRenderer', () => {
       id: 'cta-1',
       type: 'cta',
       layout: defaultLayout,
-      props: { label: 'Click me', href: 'https://example.com', newTab: false },
+      props: { label: 'Click me', href: 'https://example.com', newTab: false, variant: 'solid' as const },
     }
     render(<BlockRenderer block={block} />)
 
@@ -116,7 +116,7 @@ describe('BlockRenderer', () => {
       id: 'cta-2',
       type: 'cta',
       layout: defaultLayout,
-      props: { label: 'Open new tab', href: 'https://example.com', newTab: true },
+      props: { label: 'Open new tab', href: 'https://example.com', newTab: true, variant: 'solid' as const },
     }
     render(<BlockRenderer block={block} />)
 
