@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/vibrant-wright-w5l90b]
   pull_request:
   workflow_dispatch:
 
@@ -52,7 +52,7 @@ jobs:
           DATABASE_URL_MIGRATE: ${{ secrets.DATABASE_URL_MIGRATE }}
 
   deploy-prod:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/claude/vibrant-wright-w5l90b') && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
