@@ -6,7 +6,7 @@ import { createRouter } from './router'
 async function getRouterManifest() {
   const routerManifest = getFullRouterManifest()
   const clientManifest = getManifest('client')
-  const clientAssets: Array<any> = await clientManifest.inputs[clientManifest.handler].assets()
+  const clientAssets: Array<any> = (await clientManifest.inputs[clientManifest.handler]?.assets()) ?? []
   const cssLinks = clientAssets.filter((a: any) => a.attrs?.href?.endsWith('.css'))
   const rootRoute = (routerManifest.routes.__root__ = routerManifest.routes.__root__ || {})
   rootRoute.assets = [...cssLinks, ...(rootRoute.assets || [])]
