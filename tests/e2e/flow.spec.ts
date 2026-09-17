@@ -5,6 +5,7 @@ const PASSWORD = process.env['TEST_PASSWORD'] ?? 'password'
 
 async function login(page: import('@playwright/test').Page) {
   await page.goto('/login')
+  await page.waitForLoadState('networkidle')
   await page.getByLabel(/username/i).fill(USERNAME)
   await page.getByLabel(/password/i).fill(PASSWORD)
   await page.getByRole('button', { name: /sign in|log in|login/i }).click()
