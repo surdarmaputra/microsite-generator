@@ -1,0 +1,32 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.microsites": {
+      "name": "microsites",
+      "schema": "",
+      "columns": {
+        "id": { "name": "id", "type": "uuid", "primaryKey": true, "notNull": true, "default": "gen_random_uuid()" },
+        "slug": { "name": "slug", "type": "text", "primaryKey": false, "notNull": true },
+        "name": { "name": "name", "type": "text", "primaryKey": false, "notNull": true },
+        "draft_doc": { "name": "draft_doc", "type": "jsonb", "primaryKey": false, "notNull": true },
+        "live_doc": { "name": "live_doc", "type": "jsonb", "primaryKey": false, "notNull": false },
+        "draft_version": { "name": "draft_version", "type": "integer", "primaryKey": false, "notNull": true, "default": 1 },
+        "draft_updated_at": { "name": "draft_updated_at", "type": "timestamp with time zone", "primaryKey": false, "notNull": false },
+        "published_at": { "name": "published_at", "type": "timestamp with time zone", "primaryKey": false, "notNull": false },
+        "first_published_at": { "name": "first_published_at", "type": "timestamp with time zone", "primaryKey": false, "notNull": false },
+        "created_at": { "name": "created_at", "type": "timestamp with time zone", "primaryKey": false, "notNull": true, "default": "now()" }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "microsites_slug_unique": { "name": "microsites_slug_unique", "columns": ["slug"], "nullsNotDistinct": false }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": { "schemas": {}, "tables": {}, "columns": {} }
+}

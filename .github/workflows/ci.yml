@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run typecheck
+      - run: bun run test:coverage
+
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: microsite_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/microsite_test?sslmode=disable
+      DATABASE_URL_MIGRATE: postgres://postgres:postgres@localhost:5432/microsite_test
+      SESSION_SECRET: test-secret-32-chars-minimum-xxxx
+      S3_ENDPOINT: http://localhost:9000
+      S3_REGION: us-east-1
+      S3_ACCESS_KEY_ID: minioadmin
+      S3_SECRET_ACCESS_KEY: minioadmin
+      S3_BUCKET: microsites
+      PUBLIC_STORAGE_URL: http://localhost:9000/microsites
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - name: Generate test credentials
+        run: |
+          TEST_PASS="test-password-ci"
+          TEST_HASH=$(bun scripts/hash-password.ts "$TEST_PASS")
+          echo "ADMIN_USERS=admin:${TEST_HASH}" >> $GITHUB_ENV
+          echo "TEST_PASSWORD=${TEST_PASS}" >> $GITHUB_ENV
+      - name: Start MinIO
+        run: |
+          docker run -d --name minio \
+            -p 9000:9000 \
+            -e MINIO_ROOT_USER=minioadmin \
+            -e MINIO_ROOT_PASSWORD=minioadmin \
+            quay.io/minio/minio server /data
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:9000/minio/health/live && break || sleep 1
+          done
+      - name: Create S3 bucket
+        run: |
+          AWS_ACCESS_KEY_ID=minioadmin \
+          AWS_SECRET_ACCESS_KEY=minioadmin \
+          aws --endpoint-url http://localhost:9000 s3 mb s3://microsites
+      - name: Migrate DB
+        run: bun run migrate
+      - name: Build app
+        run: bun run build
+      - name: Start app
+        run: node scripts/serve-netlify-local.mjs &
+      - name: Wait for app
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3000 && break || sleep 2
+          done
+      - run: bunx playwright install chromium --with-deps
+      - name: Run e2e
+        env:
+          BASE_URL: http://localhost:3000
+          TEST_USERNAME: admin
+        run: bun run test:e2e
+      - name: Dump server debug log
+        if: always()
+        run: cat /tmp/serve-debug.log 2>/dev/null || echo "(no server log)"
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: [unit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run test:coverage
+      - uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

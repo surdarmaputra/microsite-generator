@@ -1,0 +1,31 @@
+[build]
+  command = "bun run build"
+  publish = "dist"
+  ignore = "exit 0"
+
+[build.environment]
+  NODE_VERSION = "20"
+  BUN_VERSION = "1.1.38"
+
+[functions]
+  included_files = ["drizzle/**"]
+
+[images]
+  remote_images = ["https://*.supabase.co/.*"]
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[headers]]
+  for = "/admin/preview/*"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[headers]]
+  for = "/login"
+  [headers.values]
+    Cache-Control = "no-store"
