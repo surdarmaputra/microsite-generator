@@ -1,8 +1,10 @@
 'use client'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
+import { ExternalLink } from 'lucide-react'
 import { getSiteFn, saveDraftFn, publishFn } from '~/server/fns/sites'
 import { BlockStack } from '~/components/editor/BlockStack'
+import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 import { Input } from '~/components/ui/Input'
 import { Button } from '~/components/ui/Button'
 import {
@@ -39,7 +41,6 @@ function EditorPage() {
   const [publishOpen, setPublishOpen] = useState(false)
   const [publishing, setPublishing] = useState(false)
 
-  const iframeRef = useRef<HTMLIFrameElement>(null)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const versionRef = useRef(version)
   versionRef.current = version
@@ -63,19 +64,6 @@ function EditorPage() {
       }
     }, 2000)
   }, [id])
-
-  useEffect(() => {
-    const iframe = iframeRef.current
-    if (!iframe) return
-    const send = () => {
-      iframe.contentWindow?.postMessage({ type: 'doc-update', doc }, '*')
-    }
-    if (iframe.contentDocument?.readyState === 'complete') {
-      send()
-    } else {
-      iframe.addEventListener('load', send, { once: true })
-    }
-  }, [doc])
 
   const handleBlocksChange = (blocks: Block[]) => {
     handleDocChange({ ...doc, blocks })
@@ -126,9 +114,19 @@ function EditorPage() {
             {saveLabel}
           </span>
         )}
+        {!!site.publishedAt && (
+          <a
+            href={`/${site.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`cursor-pointer inline-flex items-center gap-1.5 text-caption text-ink-secondary hover:text-ink-primary transition-colors ${saveLabel ? '' : 'ml-auto'}`}
+          >
+            <ExternalLink size={13} /> View site
+          </a>
+        )}
         <Button
           size="sm"
-          className={saveLabel ? '' : 'ml-auto'}
+          className={saveLabel || !!site.publishedAt ? '' : 'ml-auto'}
           onClick={() => setPublishOpen(true)}
         >
           Publish
@@ -166,12 +164,14 @@ function EditorPage() {
             className="rounded-card overflow-hidden shadow-raised"
             style={{ width: 390, height: '80vh' }}
           >
-            <iframe
-              ref={iframeRef}
-              src={`/admin/preview/${id}`}
-              style={{ width: 390, height: '100%', border: 'none' }}
-              title="Preview"
-            />
+            <div
+              className="public-page overflow-y-auto"
+              style={{ width: 390, height: '100%', background: 'white' }}
+            >
+              {doc.blocks.map(block => (
+                <BlockRenderer key={block.id} block={block} isPreview />
+              ))}
+            </div>
           </div>
         </div>
       </div>

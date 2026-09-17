@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { Plus, Pencil, Copy, Globe, Trash2, EyeOff } from 'lucide-react'
+import { Plus, Pencil, Copy, Globe, Trash2, EyeOff, ExternalLink } from 'lucide-react'
 import { StatusBadge } from './StatusBadge'
 import { Button } from '~/components/ui/Button'
 import { Input } from '~/components/ui/Input'
@@ -179,14 +179,25 @@ export function SitesList({ sites, onRefresh }: Props) {
                         <button
                           title="Edit"
                           onClick={() => navigate({ to: '/admin/editor/$id', params: { id: site.id } })}
-                          className="rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
+                          className="cursor-pointer rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
                         >
                           <Pencil size={14} />
                         </button>
+                        {site.isPublished && (
+                          <a
+                            title="View site"
+                            href={`/${site.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="cursor-pointer rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
+                          >
+                            <ExternalLink size={14} />
+                          </a>
+                        )}
                         <button
                           title="Duplicate"
                           onClick={() => openDuplicate(site)}
-                          className="rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
+                          className="cursor-pointer rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
                         >
                           <Copy size={14} />
                         </button>
@@ -194,7 +205,7 @@ export function SitesList({ sites, onRefresh }: Props) {
                           <button
                             title="Unpublish"
                             onClick={() => handleUnpublish(site.id)}
-                            className="rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
+                            className="cursor-pointer rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
                           >
                             <EyeOff size={14} />
                           </button>
@@ -202,7 +213,7 @@ export function SitesList({ sites, onRefresh }: Props) {
                         <button
                           title="Delete"
                           onClick={() => setDeleteId(site.id)}
-                          className="rounded-control text-ink-secondary hover:bg-danger/10 hover:text-danger grid size-8 place-items-center transition-colors"
+                          className="cursor-pointer rounded-control text-ink-secondary hover:bg-danger/10 hover:text-danger grid size-8 place-items-center transition-colors"
                         >
                           <Trash2 size={14} />
                         </button>

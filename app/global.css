@@ -125,7 +125,7 @@
   margin-bottom: 0;
 }
 
-/* CTA outline variant — animated gradient border */
+/* CTA outline variant — solid blue button with animated spinning gradient border */
 @property --cta-angle {
   syntax: '<angle>';
   initial-value: 0deg;
@@ -136,39 +136,31 @@
   to { --cta-angle: 360deg; }
 }
 
-.cta-outline {
-  color: #0f77ff;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  background-color: white;
-  background-image: none;
-  position: relative;
+@keyframes cta-shimmer-slide {
+  from { transform: translateX(-200%); }
+  to { transform: translateX(200%); }
 }
 
-.cta-outline::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
+/* Wrapper that provides the spinning gradient border */
+.cta-outline-wrap {
+  padding: 2px;
   border-radius: 9999px;
-  background: conic-gradient(from var(--cta-angle), #0f77ff, #7c3aed, #06b6d4, #0f77ff);
-  z-index: 0;
+  background: conic-gradient(from var(--cta-angle), #0f77ff, #7c3aed, #06b6d4, #ec4899, #0f77ff);
   animation: cta-border-spin 3s linear infinite;
+  display: block;
 }
 
-.cta-outline::after {
+/* Glass variant — solid blue with shimmer highlight */
+.cta-glass {
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-glass::after {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 9999px;
-  background: white;
-  z-index: 0;
-}
-
-.cta-outline:hover::after {
-  background: #f0f6ff;
-}
-
-.cta-outline > span {
-  position: relative;
-  z-index: 1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
+  animation: cta-shimmer-slide 2.2s ease-in-out infinite;
+  pointer-events: none;
 }

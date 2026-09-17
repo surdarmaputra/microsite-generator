@@ -23,6 +23,9 @@ const Arrow = () => (
   </svg>
 )
 
+const solidClass =
+  'group flex w-full items-center justify-center gap-2 rounded-full bg-[#0f77ff] px-6 py-3.5 text-base font-semibold text-white transition-all duration-150 hover:bg-[#1070c9] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#0f77ff] focus:ring-offset-2'
+
 export function CtaBlock({ block, isPreview }: Props) {
   const variant = block.props.variant ?? 'solid'
   const { href, newTab, label } = block.props
@@ -35,13 +38,12 @@ export function CtaBlock({ block, isPreview }: Props) {
   if (variant === 'outline') {
     return (
       <div data-block-type="cta" className="px-4">
-        <a
-          {...linkProps}
-          className="cta-outline group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full px-6 py-3.5 text-base font-semibold transition-all duration-150 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#0f77ff] focus:ring-offset-2"
-        >
-          <span className="relative z-10">{label}</span>
-          <span className="relative z-10"><Arrow /></span>
-        </a>
+        <span className="cta-outline-wrap">
+          <a {...linkProps} className={solidClass}>
+            <span>{label}</span>
+            <Arrow />
+          </a>
+        </span>
       </div>
     )
   }
@@ -51,11 +53,10 @@ export function CtaBlock({ block, isPreview }: Props) {
       <div data-block-type="cta" className="px-4">
         <a
           {...linkProps}
-          className="group flex w-full items-center justify-center gap-2 rounded-full border border-white/40 bg-white/20 px-6 py-3.5 text-base font-semibold text-[#091135] backdrop-blur-sm transition-all duration-150 hover:bg-white/35 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#0f77ff] focus:ring-offset-2"
-          style={{ boxShadow: '0 2px 16px rgba(9,17,53,0.08), inset 0 1px 0 rgba(255,255,255,0.6)' }}
+          className={`cta-glass ${solidClass}`}
         >
-          <span>{label}</span>
-          <Arrow />
+          <span className="relative z-10">{label}</span>
+          <span className="relative z-10"><Arrow /></span>
         </a>
       </div>
     )
@@ -63,10 +64,7 @@ export function CtaBlock({ block, isPreview }: Props) {
 
   return (
     <div data-block-type="cta" className="px-4">
-      <a
-        {...linkProps}
-        className="group flex w-full items-center justify-center gap-2 rounded-full bg-[#0f77ff] px-6 py-3.5 text-base font-semibold text-white transition-all duration-150 hover:bg-[#1070c9] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-[#0f77ff] focus:ring-offset-2"
-      >
+      <a {...linkProps} className={solidClass}>
         <span>{label}</span>
         <Arrow />
       </a>

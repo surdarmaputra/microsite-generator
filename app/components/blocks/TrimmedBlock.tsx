@@ -54,20 +54,26 @@ export function TrimmedBlock({ block, isPreview }: Props) {
 
       {!expanded && needsToggle && (
         <div
-          className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to bottom, transparent, white)',
-          }}
-        />
+          className="absolute bottom-0 left-0 right-0 flex items-end justify-center pb-4 pt-12"
+          style={{ background: 'linear-gradient(to bottom, transparent, white)' }}
+        >
+          <button
+            type="button"
+            onClick={() => setExpanded(v => !v)}
+            className="cursor-pointer rounded-full border border-hairline bg-white px-5 py-2 text-[13px] font-semibold text-ink-primary shadow-card hover:bg-surface-hover transition-colors"
+          >
+            Show more
+          </button>
+        </div>
       )}
 
-      {needsToggle && (
+      {expanded && needsToggle && (
         <button
           type="button"
           onClick={() => setExpanded(v => !v)}
-          className="mt-2 text-sm font-medium text-blue-600 hover:underline focus:outline-none"
+          className="cursor-pointer mt-3 block mx-auto rounded-full border border-hairline px-5 py-2 text-[13px] font-semibold text-ink-primary hover:bg-surface-hover transition-colors"
         >
-          {expanded ? 'Show less' : 'Show more'}
+          Show less
         </button>
       )}
     </div>

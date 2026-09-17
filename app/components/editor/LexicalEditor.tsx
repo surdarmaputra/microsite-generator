@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LexicalComposer } from '@lexical/react/LexicalComposer'
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
@@ -13,12 +13,16 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text'
 import { ListNode, ListItemNode } from '@lexical/list'
 import { LinkNode } from '@lexical/link'
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html'
+import { $setBlocksType } from '@lexical/selection'
+import { $patchStyleText } from '@lexical/selection'
 import {
   $getRoot,
   $getSelection,
   $insertNodes,
   $isRangeSelection,
+  $createParagraphNode,
   FORMAT_TEXT_COMMAND,
+  FORMAT_ELEMENT_COMMAND,
   EditorState,
   LexicalEditor as LexicalEditorType,
 } from 'lexical'
@@ -59,18 +63,35 @@ function InitPlugin({ value }: { value: string }) {
 
 function Toolbar() {
   const [editor] = useLexicalComposerContext()
+  const [isSecondaryColor, setIsSecondaryColor] = useState(false)
 
   const format = (f: 'bold' | 'italic' | 'underline' | 'strikethrough') => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, f)
   }
 
-  const insertHeading = (tag: 'h2' | 'h3') => {
+  const align = (a: 'left' | 'center' | 'right') => {
+    editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, a)
+  }
+
+  const setBlockStyle = (tag: 'paragraph' | 'h2' | 'h3') => {
     editor.update(() => {
       const selection = $getSelection()
-      if ($isRangeSelection(selection)) {
-        const node = $createHeadingNode(tag)
-        selection.insertNodes([node])
+      if (!$isRangeSelection(selection)) return
+      if (tag === 'paragraph') {
+        $setBlocksType(selection, () => $createParagraphNode())
+      } else {
+        $setBlocksType(selection, () => $createHeadingNode(tag))
       }
+    })
+  }
+
+  const toggleSecondaryColor = () => {
+    editor.update(() => {
+      const selection = $getSelection()
+      if (!$isRangeSelection(selection)) return
+      const next = !isSecondaryColor
+      $patchStyleText(selection, { color: next ? '#36394a' : '' })
+      setIsSecondaryColor(next)
     })
   }
 
@@ -121,24 +142,34 @@ function Toolbar() {
     })
   }
 
-  const btnClass = 'px-2 py-1 text-xs rounded hover:bg-gray-100 border border-transparent hover:border-gray-200 font-medium'
+  const btn = 'cursor-pointer px-2 py-1 text-xs rounded hover:bg-surface-hover border border-transparent hover:border-hairline font-medium text-ink-secondary hover:text-ink-primary transition-colors'
+  const sep = 'mx-1 w-px bg-hairline self-stretch'
 
   return (
-    <div className="flex flex-wrap gap-0.5 border-b border-gray-200 p-1.5">
-      <button type="button" onClick={() => format('bold')} className={cn(btnClass, 'font-bold')}>B</button>
-      <button type="button" onClick={() => format('italic')} className={cn(btnClass, 'italic')}>I</button>
-      <button type="button" onClick={() => format('underline')} className={cn(btnClass, 'underline')}>U</button>
-      <button type="button" onClick={() => format('strikethrough')} className={cn(btnClass, 'line-through')}>S</button>
-      <div className="mx-1 w-px bg-gray-200" />
-      <button type="button" onClick={() => insertHeading('h2')} className={btnClass}>H2</button>
-      <button type="button" onClick={() => insertHeading('h3')} className={btnClass}>H3</button>
-      <div className="mx-1 w-px bg-gray-200" />
-      <button type="button" onClick={insertUl} className={btnClass}>UL</button>
-      <button type="button" onClick={insertOl} className={btnClass}>OL</button>
-      <div className="mx-1 w-px bg-gray-200" />
-      <button type="button" onClick={insertLink} className={btnClass}>Link</button>
-      <button type="button" onClick={insertImage} className={btnClass}>Image</button>
-      <button type="button" onClick={insertYouTube} className={btnClass}>YouTube</button>
+    <div className="flex flex-wrap gap-0.5 border-b border-hairline bg-surface-card p-1.5">
+      <button type="button" onClick={() => format('bold')} className={cn(btn, 'font-bold')}>B</button>
+      <button type="button" onClick={() => format('italic')} className={cn(btn, 'italic')}>I</button>
+      <button type="button" onClick={() => format('underline')} className={cn(btn, 'underline')}>U</button>
+      <button type="button" onClick={() => format('strikethrough')} className={cn(btn, 'line-through')}>S</button>
+      <div className={sep} />
+      <button type="button" onClick={() => setBlockStyle('paragraph')} className={btn}>P</button>
+      <button type="button" onClick={() => setBlockStyle('h2')} className={btn}>H2</button>
+      <button type="button" onClick={() => setBlockStyle('h3')} className={btn}>H3</button>
+      <div className={sep} />
+      <button type="button" onClick={() => align('left')} className={btn} title="Align left">≡</button>
+      <button type="button" onClick={() => align('center')} className={btn} title="Align center">≡̄</button>
+      <button type="button" onClick={() => align('right')} className={btn} title="Align right" style={{ direction: 'rtl' }}>≡</button>
+      <div className={sep} />
+      <button type="button" onClick={toggleSecondaryColor} className={cn(btn, isSecondaryColor ? 'ring-1 ring-accent/40 bg-surface-hover' : '')} title="Toggle secondary color">
+        <span style={{ color: '#36394a' }}>A</span>
+      </button>
+      <div className={sep} />
+      <button type="button" onClick={insertUl} className={btn}>UL</button>
+      <button type="button" onClick={insertOl} className={btn}>OL</button>
+      <div className={sep} />
+      <button type="button" onClick={insertLink} className={btn}>Link</button>
+      <button type="button" onClick={insertImage} className={btn}>Image</button>
+      <button type="button" onClick={insertYouTube} className={btn}>YouTube</button>
     </div>
   )
 }
@@ -157,8 +188,8 @@ export function LexicalEditor({ value, onChange, placeholder }: Props) {
   const initialConfig = useMemo(() => ({
     namespace: 'editor',
     theme: {
-      root: 'min-h-[120px] p-3 text-sm text-gray-900 focus:outline-none',
-      link: 'text-blue-600 underline cursor-pointer',
+      root: 'min-h-[120px] p-3 text-caption text-ink-primary focus:outline-none',
+      link: 'text-accent underline cursor-pointer',
       text: {
         bold: 'font-bold',
         italic: 'italic',
@@ -180,13 +211,13 @@ export function LexicalEditor({ value, onChange, placeholder }: Props) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="rounded-lg border border-gray-200 overflow-hidden">
+      <div className="rounded-control border border-hairline overflow-hidden">
         <Toolbar />
         <div className="relative">
           <RichTextPlugin
-            contentEditable={<ContentEditable className="min-h-[120px] p-3 text-sm text-gray-900 focus:outline-none" />}
+            contentEditable={<ContentEditable className="min-h-[120px] p-3 text-caption text-ink-primary focus:outline-none" />}
             placeholder={
-              <div className="pointer-events-none absolute top-3 left-3 text-sm text-gray-400">{placeholder ?? ''}</div>
+              <div className="pointer-events-none absolute top-3 left-3 text-caption text-ink-secondary">{placeholder ?? ''}</div>
             }
             ErrorBoundary={LexicalErrorBoundary}
           />

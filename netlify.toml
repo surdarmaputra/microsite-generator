@@ -10,6 +10,9 @@
 [functions]
   included_files = ["drizzle/**"]
 
+[images]
+  remote_images = ["https://*.supabase.co/.*"]
+
 [[headers]]
   for = "/admin/*"
   [headers.values]
