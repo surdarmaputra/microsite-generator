@@ -33,6 +33,8 @@ export function BlockStack({ blocks, onChange }: Props) {
   blocksRef.current = blocks
 
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [newIds, setNewIds] = useState<Set<string>>(() => new Set())
+  const [insertAt, setInsertAt] = useState<number | null>(null)
 
   useEffect(() => {
     const el = containerRef.current
@@ -53,8 +55,22 @@ export function BlockStack({ blocks, onChange }: Props) {
     return () => sortable.destroy()
   }, [])
 
+  const openPicker = (at?: number) => {
+    setInsertAt(at ?? null)
+    setPickerOpen(true)
+  }
+
   const addBlock = (type: BlockType) => {
-    onChange([...blocks, defaultBlock(type)])
+    const block = defaultBlock(type)
+    setNewIds(prev => new Set([...prev, block.id]))
+    if (insertAt !== null) {
+      const next = [...blocks]
+      next.splice(insertAt, 0, block)
+      onChange(next)
+    } else {
+      onChange([...blocks, block])
+    }
+    setInsertAt(null)
     setPickerOpen(false)
   }
 
@@ -68,6 +84,14 @@ export function BlockStack({ blocks, onChange }: Props) {
     onChange(blocks.filter((_, i) => i !== index))
   }
 
+  const moveBlock = (fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 || toIndex >= blocks.length) return
+    const next = [...blocks]
+    const [moved] = next.splice(fromIndex, 1)
+    if (moved) next.splice(toIndex, 0, moved)
+    onChange(next)
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div ref={containerRef} className="flex flex-col gap-3">
@@ -75,19 +99,26 @@ export function BlockStack({ blocks, onChange }: Props) {
           <div key={block.id}>
             <BlockCard
               block={block}
+              isNew={newIds.has(block.id)}
               onChange={b => updateBlock(i, b)}
               onDelete={() => deleteBlock(i)}
+              onInsertAbove={() => openPicker(i)}
+              onInsertBelow={() => openPicker(i + 1)}
+              onMoveUp={() => moveBlock(i, i - 1)}
+              onMoveDown={() => moveBlock(i, i + 1)}
+              onMoveFirst={() => moveBlock(i, 0)}
+              onMoveLast={() => moveBlock(i, blocks.length - 1)}
               dragHandleProps={{ 'data-drag-handle': true }}
             />
           </div>
         ))}
       </div>
 
-      <Button variant="outline" size="sm" onClick={() => setPickerOpen(true)}>
+      <Button variant="outline" size="sm" onClick={() => openPicker()}>
         + Add block
       </Button>
 
-      <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
+      <Dialog open={pickerOpen} onOpenChange={open => { setPickerOpen(open); if (!open) setInsertAt(null) }}>
         <DialogContent>
           <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
             Add block
@@ -104,7 +135,7 @@ export function BlockStack({ blocks, onChange }: Props) {
             ))}
           </div>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setPickerOpen(false)}>Cancel</Button>
+            <Button variant="outline" size="sm" onClick={() => { setPickerOpen(false); setInsertAt(null) }}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

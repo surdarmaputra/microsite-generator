@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { Plus, Pencil, Copy, Globe, Trash2, EyeOff, ExternalLink } from 'lucide-react'
+import { Plus, Pencil, Copy, Globe, Trash2, EyeOff, ExternalLink, MoreHorizontal } from 'lucide-react'
 import { StatusBadge } from './StatusBadge'
 import { Button } from '~/components/ui/Button'
 import { Input } from '~/components/ui/Input'
@@ -13,6 +13,13 @@ import {
   DialogBody,
   DialogFooter,
 } from '~/components/ui/Dialog'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '~/components/ui/DropdownMenu'
 import {
   createSiteFn,
   deleteSiteFn,
@@ -175,7 +182,8 @@ export function SitesList({ sites, onRefresh }: Props) {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1">
+                      {/* Desktop: icon buttons */}
+                      <div className="hidden md:flex items-center justify-end gap-1">
                         <button
                           title="Edit"
                           onClick={() => navigate({ to: '/admin/editor/$id', params: { id: site.id } })}
@@ -217,6 +225,43 @@ export function SitesList({ sites, onRefresh }: Props) {
                         >
                           <Trash2 size={14} />
                         </button>
+                      </div>
+                      {/* Mobile: dropdown */}
+                      <div className="flex md:hidden justify-end">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="cursor-pointer rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors">
+                              <MoreHorizontal size={14} />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onSelect={() => navigate({ to: '/admin/editor/$id', params: { id: site.id } })}>
+                              <Pencil size={13} /> Edit
+                            </DropdownMenuItem>
+                            {site.isPublished && (
+                              <DropdownMenuItem asChild>
+                                <a href={`/${site.slug}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                  <ExternalLink size={13} /> View site
+                                </a>
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem onSelect={() => openDuplicate(site)}>
+                              <Copy size={13} /> Duplicate
+                            </DropdownMenuItem>
+                            {status !== 'draft' && (
+                              <DropdownMenuItem onSelect={() => handleUnpublish(site.id)}>
+                                <EyeOff size={13} /> Unpublish
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onSelect={() => setDeleteId(site.id)}
+                              className="text-danger data-[highlighted]:bg-danger/10 data-[highlighted]:text-danger"
+                            >
+                              <Trash2 size={13} /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </td>
                   </tr>
