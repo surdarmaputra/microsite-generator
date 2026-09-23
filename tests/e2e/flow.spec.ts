@@ -70,6 +70,7 @@ test('admin flow: login → create → add blocks → publish → public page �
   await page.goto('/admin')
   const row = page.getByRole('row').filter({ hasText: slug })
   await row.getByRole('button', { name: /unpublish/i }).click()
+  await page.getByRole('dialog').getByRole('button', { name: /^unpublish$/i }).click()
   await expect(row.getByText(/^draft$/i)).toBeVisible({ timeout: 10_000 })
 
   const notFoundPage = await page.context().newPage()
