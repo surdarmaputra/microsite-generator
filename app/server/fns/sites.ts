@@ -25,17 +25,11 @@ function sanitizeDoc(doc: Doc): Doc {
 }
 
 async function purgeSite(slug: string) {
-  const results = await Promise.allSettled([
-    purgeCache({ tags: [`site-${slug}`] }),
-    purgeCache({ path: `/${slug}` }),
-    purgeCache({ path: `/api/v1/microsites/${slug}` }),
-  ])
-  results.forEach((r, i) => {
-    if (r.status === 'rejected') {
-      const targets = [`tags:site-${slug}`, `/${slug}`, `/api/v1/microsites/${slug}`]
-      console.error(`[purgeSite] purge failed for ${targets[i]}:`, r.reason)
-    }
-  })
+  try {
+    await purgeCache({ tags: [`site-${slug}`] })
+  } catch (e) {
+    console.error(`[purgeSite] tag purge failed for site-${slug}:`, e)
+  }
 }
 
 export const listSitesFn = createServerFn()
