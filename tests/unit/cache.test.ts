@@ -61,10 +61,10 @@ describe('notFoundCacheHeaders', () => {
 })
 
 describe('apiCacheHeaders', () => {
-  it('uses Netlify-Cache-ID (not Cache-Tag)', () => {
+  it('uses Cache-Tag (not Netlify-Cache-ID)', () => {
     const headers = apiCacheHeaders('my-api-site')
-    expect(headers['Netlify-Cache-ID']).toBe('site-my-api-site')
-    expect(headers['Cache-Tag']).toBeUndefined()
+    expect(headers['Cache-Tag']).toBe('site-my-api-site')
+    expect(headers['Netlify-Cache-ID']).toBeUndefined()
   })
 
   it('includes long TTL in Netlify-CDN-Cache-Control', () => {
@@ -77,8 +77,8 @@ describe('apiCacheHeaders', () => {
     expect(headers['Cache-Control']).toContain('must-revalidate')
   })
 
-  it('uses the provided slug in Netlify-Cache-ID', () => {
+  it('uses the provided slug in Cache-Tag', () => {
     const headers = apiCacheHeaders('special-slug')
-    expect(headers['Netlify-Cache-ID']).toBe('site-special-slug')
+    expect(headers['Cache-Tag']).toBe('site-special-slug')
   })
 })
