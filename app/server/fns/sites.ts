@@ -27,8 +27,8 @@ function sanitizeDoc(doc: Doc): Doc {
 async function purgeSite(slug: string) {
   try {
     await purgeCache({ tags: [`site-${slug}`] })
-  } catch {
-    // non-fatal outside Netlify env
+  } catch (e) {
+    console.error(`[purgeSite] tag purge failed for site-${slug}:`, e)
   }
 }
 

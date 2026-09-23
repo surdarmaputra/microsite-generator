@@ -45,6 +45,9 @@ function nodeBuiltinsBrowserShim(): Plugin {
 export default defineConfig({
   server: {
     preset: 'netlify',
+    // >= 2024-05-07 makes Nitro emit a Netlify Functions v2 handler; the legacy
+    // Lambda handler has no NETLIFY_PURGE_API_TOKEN env, so purgeCache always failed.
+    compatibilityDate: '2024-11-01',
     experimental: {
       asyncContext: true,
     },

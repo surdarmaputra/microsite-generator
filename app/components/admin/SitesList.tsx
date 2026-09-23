@@ -62,6 +62,9 @@ export function SitesList({ sites, onRefresh }: Props) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
+  const [unpublishId, setUnpublishId] = useState<string | null>(null)
+  const [unpublishing, setUnpublishing] = useState(false)
+
   const handleCreate = async () => {
     setCreateError(null)
     setCreating(true)
@@ -111,9 +114,16 @@ export function SitesList({ sites, onRefresh }: Props) {
     }
   }
 
-  const handleUnpublish = async (id: string) => {
-    await unpublishFn({ data: { id } })
-    onRefresh()
+  const handleUnpublish = async () => {
+    if (!unpublishId) return
+    setUnpublishing(true)
+    try {
+      await unpublishFn({ data: { id: unpublishId } })
+      setUnpublishId(null)
+      onRefresh()
+    } finally {
+      setUnpublishing(false)
+    }
   }
 
   return (
@@ -212,7 +222,7 @@ export function SitesList({ sites, onRefresh }: Props) {
                         {status !== 'draft' && (
                           <button
                             title="Unpublish"
-                            onClick={() => handleUnpublish(site.id)}
+                            onClick={() => setUnpublishId(site.id)}
                             className="cursor-pointer rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
                           >
                             <EyeOff size={14} />
@@ -249,7 +259,7 @@ export function SitesList({ sites, onRefresh }: Props) {
                               <Copy size={13} /> Duplicate
                             </DropdownMenuItem>
                             {status !== 'draft' && (
-                              <DropdownMenuItem onSelect={() => handleUnpublish(site.id)}>
+                              <DropdownMenuItem onSelect={() => setUnpublishId(site.id)}>
                                 <EyeOff size={13} /> Unpublish
                               </DropdownMenuItem>
                             )}
@@ -352,6 +362,26 @@ export function SitesList({ sites, onRefresh }: Props) {
             <Button variant="outline" size="sm" onClick={() => setDeleteId(null)}>Cancel</Button>
             <Button variant="destructive" size="sm" disabled={deleting} onClick={handleDelete}>
               {deleting ? 'Deleting…' : 'Delete'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Unpublish dialog */}
+      <Dialog open={unpublishId !== null} onOpenChange={open => { if (!open) setUnpublishId(null) }}>
+        <DialogContent>
+          <DialogBody>
+            <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
+              Unpublish site
+            </DialogTitle>
+            <DialogDescription className="text-caption text-ink-secondary mt-2">
+              The site will no longer be publicly accessible until you publish it again.
+            </DialogDescription>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setUnpublishId(null)}>Cancel</Button>
+            <Button size="sm" disabled={unpublishing} onClick={handleUnpublish}>
+              {unpublishing ? 'Unpublishing…' : 'Unpublish'}
             </Button>
           </DialogFooter>
         </DialogContent>

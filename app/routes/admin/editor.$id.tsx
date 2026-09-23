@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
+  DialogBody,
   DialogFooter,
 } from '~/components/ui/Dialog'
 import { Drawer, DrawerContent, DrawerCloseButton } from '~/components/ui/Drawer'
@@ -217,12 +218,14 @@ function EditorPage() {
 
       <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
         <DialogContent>
-          <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
-            Publish site
-          </DialogTitle>
-          <DialogDescription className="text-caption text-ink-secondary mt-2">
-            Are you sure you want to publish? This will make the site publicly visible.
-          </DialogDescription>
+          <DialogBody>
+            <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
+              Publish site
+            </DialogTitle>
+            <DialogDescription className="text-caption text-ink-secondary mt-2">
+              Are you sure you want to publish? This will make the site publicly visible.
+            </DialogDescription>
+          </DialogBody>
           <DialogFooter>
             <Button variant="outline" size="sm" onClick={() => setPublishOpen(false)}>Cancel</Button>
             <Button size="sm" disabled={publishing} onClick={handlePublish}>
@@ -231,6 +234,7 @@ function EditorPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </div>
   )
 }
