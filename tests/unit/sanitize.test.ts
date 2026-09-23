@@ -94,6 +94,41 @@ describe('sanitizeBlockHtml', () => {
     const result = sanitizeBlockHtml(html)
     expect(result).toContain('rel="noopener noreferrer"')
   })
+
+  it('preserves text-align style on p', () => {
+    const result = sanitizeBlockHtml('<p style="text-align: center;">hello</p>')
+    expect(result).toContain('text-align')
+    expect(result).toContain('center')
+  })
+
+  it('preserves text-align style on headings', () => {
+    const result = sanitizeBlockHtml('<h2 style="text-align: right;">heading</h2>')
+    expect(result).toContain('text-align')
+    expect(result).toContain('right')
+  })
+
+  it('preserves hex color style on span', () => {
+    const result = sanitizeBlockHtml('<span style="color: #36394a;">text</span>')
+    expect(result).toContain('color')
+    expect(result).toContain('#36394a')
+  })
+
+  it('strips non-hex color values', () => {
+    const result = sanitizeBlockHtml('<span style="color: red;">text</span>')
+    expect(result).not.toContain('color')
+  })
+
+  it('strips disallowed CSS properties but keeps text-align', () => {
+    const result = sanitizeBlockHtml('<p style="font-size: 16px; text-align: center;">text</p>')
+    expect(result).not.toContain('font-size')
+    expect(result).toContain('text-align')
+  })
+
+  it('strips class attributes from elements', () => {
+    const result = sanitizeBlockHtml('<h2 class="text-xl font-bold mt-3">heading</h2>')
+    expect(result).not.toContain('class=')
+    expect(result).toContain('<h2>')
+  })
 })
 
 // ─── sanitizeCtaHref ─────────────────────────────────────────────────────────
