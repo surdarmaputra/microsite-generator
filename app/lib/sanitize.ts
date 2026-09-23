@@ -4,9 +4,16 @@ function makeOptions(storageUrl: string): sanitizeHtml.IOptions {
   return {
     allowedTags: ['p', 'h2', 'h3', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li', 'blockquote', 'img', 'iframe', 'br', 'span'],
     allowedAttributes: {
+      '*': ['style'],
       a: ['href', 'rel', 'target'],
       img: ['src', 'alt', 'width', 'height'],
       iframe: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
+    },
+    allowedStyles: {
+      '*': {
+        'text-align': [/^(left|center|right|justify)$/],
+        'color': [/^#[0-9a-fA-F]{3,6}$/],
+      },
     },
     transformTags: {
       a: (tagName, attribs) => {

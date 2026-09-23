@@ -21,6 +21,6 @@ export function apiCacheHeaders(slug: string): Record<string, string> {
     'Netlify-CDN-Cache-Control': 'public, s-maxage=31536000, durable',
     'Cache-Control': 'public, max-age=0, must-revalidate',
     'Netlify-Vary': 'query=',
-    'Netlify-Cache-ID': `site-${slug}`,
+    'Cache-Tag': `site-${slug}`,
   }
 }
