@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Wraps the netlify Lambda handler in a local HTTP server for CI e2e testing.
+// Wraps the Netlify Functions v2 handler in a local HTTP server for CI e2e testing.
 // Usage: node scripts/serve-netlify-local.mjs
 import { createServer } from 'node:http'
 import { createReadStream, existsSync, statSync, appendFileSync } from 'node:fs'
@@ -13,7 +13,7 @@ function log(...args) {
   try { appendFileSync(LOG_FILE, line) } catch {}
 }
 
-const { handler } = await import('../.netlify/functions-internal/server/server.mjs')
+const { default: handler } = await import('../.netlify/functions-internal/server/server.mjs')
 
 const PORT = process.env.PORT || 3000
 const STATIC_DIR = resolve('dist')
@@ -58,59 +58,32 @@ const server = createServer(async (req, res) => {
     return
   }
 
-  // Fall through to the lambda handler
+  // Fall through to the Netlify Functions v2 handler: (Request) => Response
   const bodyBuf = await readBody(req)
   const contentType = req.headers['content-type'] || ''
-  const isText = contentType.startsWith('application/json') || contentType.startsWith('text/')
-  const bodyStr = bodyBuf.length
-    ? (isText ? bodyBuf.toString('utf-8') : bodyBuf.toString('base64'))
-    : undefined
+  log(`REQ ${req.method} ${pathname} content-type=${contentType} body-len=${bodyBuf.length}`)
 
-  const event = {
-    path: pathname,
-    httpMethod: req.method,
-    headers: req.headers,
-    multiValueHeaders: {},
-    queryStringParameters: Object.fromEntries(url.searchParams),
-    multiValueQueryStringParameters: {},
-    body: bodyStr || null,
-    isBase64Encoded: bodyBuf.length > 0 && !isText,
-  }
-
-  log(`REQ ${req.method} ${pathname} content-type=${contentType} body-len=${bodyBuf.length} isBase64=${event.isBase64Encoded}`)
-  if (bodyBuf.length > 0 && isText) {
-    log(`REQ BODY ${bodyStr?.slice(0, 500)}`)
+  const reqHeaders = new Headers()
+  for (const [k, v] of Object.entries(req.headers)) {
+    if (Array.isArray(v)) v.forEach(x => reqHeaders.append(k, x))
+    else if (v !== undefined) reqHeaders.set(k, v)
   }
 
   try {
-    const result = await handler(event, {})
-    const headers = { ...result.headers }
-    if (result.multiValueHeaders) {
-      for (const [k, v] of Object.entries(result.multiValueHeaders)) {
-        headers[k] = v
-      }
-    }
-    log(`RES ${result.statusCode || 200} set-cookie=${headers['set-cookie'] || headers['Set-Cookie'] || 'none'} content-type=${headers['content-type'] || 'none'}`)
-    if (result.body && !result.isBase64Encoded && pathname.startsWith('/_server')) {
-      log(`RES BODY ${result.body.slice(0, 500)}`)
-    }
-    res.writeHead(result.statusCode || 200, headers)
-    if (result.isBase64Encoded && result.body) {
-      res.end(Buffer.from(result.body, 'base64'))
-    } else {
-      let responseBody = result.body || ''
-      if (responseBody && typeof responseBody !== 'string' && typeof responseBody.getReader === 'function') {
-        const reader = responseBody.getReader()
-        const chunks = []
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-          chunks.push(value instanceof Uint8Array ? value : Buffer.from(String(value)))
-        }
-        responseBody = Buffer.concat(chunks).toString('utf-8')
-      }
-      res.end(responseBody)
-    }
+    const response = await handler(new Request(url, {
+      method: req.method,
+      headers: reqHeaders,
+      body: bodyBuf.length && req.method !== 'GET' && req.method !== 'HEAD' ? bodyBuf : undefined,
+    }))
+    const headers = {}
+    response.headers.forEach((v, k) => { if (k !== 'set-cookie') headers[k] = v })
+    const cookies = response.headers.getSetCookie()
+    if (cookies.length) headers['set-cookie'] = cookies
+    log(`RES ${response.status} set-cookie=${cookies.length ? cookies.join(';') : 'none'} content-type=${headers['content-type'] || 'none'}`)
+    const body = Buffer.from(await response.arrayBuffer())
+    if (pathname.startsWith('/_server')) log(`RES BODY ${body.toString('utf-8').slice(0, 500)}`)
+    res.writeHead(response.status, headers)
+    res.end(body)
   } catch (err) {
     log(`ERR ${err.message}\n${err.stack}`)
     console.error('Handler error:', err)
