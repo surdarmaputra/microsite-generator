@@ -119,12 +119,40 @@
   margin: 0;
 }
 
+[data-block-type] h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+[data-block-type] h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+[data-block-type] ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+}
+
+[data-block-type] ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+}
+
 [data-block-type] p:first-child {
   margin-top: 0;
 }
 
 [data-block-type] p:last-child {
   margin-bottom: 0;
+}
+
+[data-block-type] iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
 }
 
 /* CTA outline variant — solid blue button with animated spinning gradient border */
