@@ -25,11 +25,17 @@ function sanitizeDoc(doc: Doc): Doc {
 }
 
 async function purgeSite(slug: string) {
-  try {
-    await purgeCache({ tags: [`site-${slug}`] })
-  } catch {
-    // non-fatal outside Netlify env
-  }
+  const results = await Promise.allSettled([
+    purgeCache({ tags: [`site-${slug}`] }),
+    purgeCache({ path: `/${slug}` }),
+    purgeCache({ path: `/api/v1/microsites/${slug}` }),
+  ])
+  results.forEach((r, i) => {
+    if (r.status === 'rejected') {
+      const targets = [`tags:site-${slug}`, `/${slug}`, `/api/v1/microsites/${slug}`]
+      console.error(`[purgeSite] purge failed for ${targets[i]}:`, r.reason)
+    }
+  })
 }
 
 export const listSitesFn = createServerFn()
