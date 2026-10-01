@@ -1,9 +1,9 @@
 import { createServerFn } from '@tanstack/start-client-core'
 import { eq, and, isNotNull, sql } from 'drizzle-orm'
-import { purgeCache } from '@netlify/functions'
 import { db } from '~/server/db'
 import { microsites } from '~/server/db/schema'
 import { DocSchema, emptyDoc, isReservedSlug } from '~/lib/doc'
+import { publishValues, purgeSite, UNPUBLISH_VALUES } from '~/lib/publish'
 import { sanitizeBlockHtml, sanitizeCtaHref } from '~/lib/sanitize'
 import { requireAuth } from './auth'
 import { z } from 'zod'
@@ -21,14 +21,6 @@ function sanitizeDoc(doc: Doc): Doc {
       }
       return block
     }),
-  }
-}
-
-async function purgeSite(slug: string) {
-  try {
-    await purgeCache({ tags: [`site-${slug}`] })
-  } catch (e) {
-    console.error(`[purgeSite] tag purge failed for site-${slug}:`, e)
   }
 }
 
@@ -101,7 +93,7 @@ export const publishFn = createServerFn({ method: 'POST' })
     const [site] = await db.select().from(microsites).where(eq(microsites.id, data.id))
     if (!site) throw new Error('Not found')
     await db.update(microsites)
-      .set({ liveDoc: site.draftDoc, publishedAt: now, firstPublishedAt: site.firstPublishedAt ?? now })
+      .set(publishValues(site, now))
       .where(eq(microsites.id, data.id))
     await purgeSite(site.slug)
     return { ok: true }
@@ -113,7 +105,7 @@ export const unpublishFn = createServerFn({ method: 'POST' })
     await requireAuth()
     const [site] = await db.select({ slug: microsites.slug }).from(microsites).where(eq(microsites.id, data.id))
     if (!site) throw new Error('Not found')
-    await db.update(microsites).set({ liveDoc: null, publishedAt: null }).where(eq(microsites.id, data.id))
+    await db.update(microsites).set(UNPUBLISH_VALUES).where(eq(microsites.id, data.id))
     await purgeSite(site.slug)
     return { ok: true }
   })
