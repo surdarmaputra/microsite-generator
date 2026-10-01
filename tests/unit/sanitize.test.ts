@@ -173,8 +173,9 @@ describe('sanitizeBlockHtml — branch edges', () => {
   it('a without href gets #', () => {
     expect(sanitizeBlockHtml('<a>x</a>')).toContain('href="#"')
   })
-  it('keeps target=_blank', () => {
+  it('keeps target=_blank, strips other targets', () => {
     expect(sanitizeBlockHtml('<a href="https://a.com" target="_blank">x</a>')).toContain('target="_blank"')
+    expect(sanitizeBlockHtml('<a href="https://a.com" target="_top">x</a>')).not.toContain('target')
   })
   it('img without src becomes span', () => {
     expect(sanitizeBlockHtml('<img alt="x">')).not.toContain('<img')

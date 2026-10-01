@@ -17,15 +17,16 @@ function makeOptions(storageUrl: string): sanitizeHtml.IOptions {
     },
     transformTags: {
       a: (tagName, attribs) => {
+        const { target, ...rest } = attribs
         const href = attribs['href'] ?? ''
         const isAllowed = /^(https?|mailto|tel):/.test(href)
         return {
           tagName,
           attribs: {
-            ...attribs,
+            ...rest,
             href: isAllowed ? href : '#',
             rel: 'noopener noreferrer',
-            ...(attribs['target'] === '_blank' ? { target: '_blank' } : {}),
+            ...(target === '_blank' ? { target: '_blank' } : {}),
           },
         }
       },
