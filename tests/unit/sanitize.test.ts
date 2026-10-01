@@ -168,3 +168,39 @@ describe('sanitizeCtaHref', () => {
     expect(sanitizeCtaHref(url)).toBe(url)
   })
 })
+
+describe('sanitizeBlockHtml — branch edges', () => {
+  it('a without href gets #', () => {
+    expect(sanitizeBlockHtml('<a>x</a>')).toContain('href="#"')
+  })
+  it('keeps target=_blank', () => {
+    expect(sanitizeBlockHtml('<a href="https://a.com" target="_blank">x</a>')).toContain('target="_blank"')
+  })
+  it('img without src becomes span', () => {
+    expect(sanitizeBlockHtml('<img alt="x">')).not.toContain('<img')
+  })
+  it('iframe without src becomes span', () => {
+    expect(sanitizeBlockHtml('<iframe></iframe>')).not.toContain('<iframe')
+  })
+  it('iframe gets default width/height', () => {
+    const out = sanitizeBlockHtml('<iframe src="https://www.youtube-nocookie.com/embed/abc"></iframe>')
+    expect(out).toContain('width="560"')
+    expect(out).toContain('height="315"')
+  })
+  it('iframe keeps given width/height', () => {
+    const out = sanitizeBlockHtml('<iframe src="https://www.youtube-nocookie.com/embed/abc" width="100" height="50"></iframe>')
+    expect(out).toContain('width="100"')
+    expect(out).toContain('height="50"')
+  })
+  it('drops all imgs when PUBLIC_STORAGE_URL unset', async () => {
+    vi.stubEnv('PUBLIC_STORAGE_URL', '')
+    expect(sanitizeBlockHtml(`<img src="${STORAGE}/a.png">`)).not.toContain('<img')
+    vi.stubEnv('PUBLIC_STORAGE_URL', STORAGE)
+  })
+  it('treats missing PUBLIC_STORAGE_URL as empty', () => {
+    vi.unstubAllEnvs()
+    delete process.env['PUBLIC_STORAGE_URL']
+    expect(sanitizeBlockHtml(`<img src="${STORAGE}/a.png">`)).not.toContain('<img')
+    vi.stubEnv('PUBLIC_STORAGE_URL', STORAGE)
+  })
+})

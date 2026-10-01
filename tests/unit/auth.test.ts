@@ -73,3 +73,27 @@ describe('verifyCredentials — multiple admin users', () => {
     expect(await verifyCredentials('alice', 'pass2')).toBe(false)
   })
 })
+
+describe('verifyCredentials — edge cases', () => {
+  afterAll(() => vi.unstubAllEnvs())
+
+  it('returns false when ADMIN_USERS is unset', async () => {
+    vi.unstubAllEnvs()
+    delete process.env['ADMIN_USERS']
+    expect(await verifyCredentials('u', 'p')).toBe(false)
+  })
+  it('throws on malformed ADMIN_USERS entry', async () => {
+    vi.stubEnv('ADMIN_USERS', 'nocolon')
+    await expect(verifyCredentials('u', 'p')).rejects.toThrow('malformed')
+  })
+  it('returns false for username of different length', async () => {
+    const hash = await hashPassword('pw')
+    vi.stubEnv('ADMIN_USERS', `alice:${hash}`)
+    expect(await verifyCredentials('alice-longer', 'pw')).toBe(false)
+  })
+  it('returns false for same-length wrong username', async () => {
+    const hash = await hashPassword('pw')
+    vi.stubEnv('ADMIN_USERS', `alice:${hash}`)
+    expect(await verifyCredentials('alicf', 'pw')).toBe(false)
+  })
+})
