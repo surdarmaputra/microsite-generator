@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+export const ThemeSchema = z.enum(['basic', 'modern']).default('basic')
+export type Theme = z.infer<typeof ThemeSchema>
+
 export const SpaceSchema = z.enum(['-lg', '-md', '-sm', '0', 'sm', 'md', 'lg', 'xl'])
 export type Space = z.infer<typeof SpaceSchema>
 
@@ -69,6 +72,7 @@ export const MetaSchema = z.object({
 export type Meta = z.infer<typeof MetaSchema>
 
 export const DocSchema = z.object({
+  theme: ThemeSchema,
   meta: MetaSchema,
   blocks: z.array(BlockSchema).max(30),
 })
@@ -115,6 +119,7 @@ function rewriteImageSrcs(html: string, storageUrl: string): string {
 }
 
 export const emptyDoc = (): Doc => ({
+  theme: 'basic',
   meta: { title: '', description: '' },
   blocks: [],
 })
