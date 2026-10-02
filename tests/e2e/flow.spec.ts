@@ -114,12 +114,12 @@ test('themes page previews every theme', async ({ page }) => {
   // 3. Expect the heading "Themes"
   await expect(page.getByRole('heading', { name: 'Themes' })).toBeVisible()
 
-  // 4. Expect Basic and Modern cards
+  // 4. Expect Basic and Modern Classy cards
   await expect(page.getByRole('article', { name: 'Basic' })).toBeVisible()
-  await expect(page.getByRole('article', { name: 'Modern' })).toBeVisible()
+  await expect(page.getByRole('article', { name: 'Modern Classy' })).toBeVisible()
 
-  // 5. Click "Expand Modern preview"
-  await page.getByRole('button', { name: 'Expand Modern preview' }).click()
+  // 5. Expand the Modern Classy preview
+  await page.getByRole('button', { name: 'Expand Modern Classy preview' }).click()
 
   // 6. Expect the dialog to contain [data-theme="modern"], then close it
   const dialog = page.getByRole('dialog')
