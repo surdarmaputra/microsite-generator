@@ -16,6 +16,7 @@ import { Route as AdminImport } from './routes/admin'
 import { Route as SlugImport } from './routes/$slug'
 import { Route as IndexImport } from './routes/index'
 import { Route as AdminIndexImport } from './routes/admin/index'
+import { Route as AdminThemesImport } from './routes/admin/themes'
 import { Route as AdminPreviewIdImport } from './routes/admin/preview.$id'
 import { Route as AdminEditorIdImport } from './routes/admin/editor.$id'
 
@@ -48,6 +49,12 @@ const IndexRoute = IndexImport.update({
 const AdminIndexRoute = AdminIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+const AdminThemesRoute = AdminThemesImport.update({
+  id: '/themes',
+  path: '/themes',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -95,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/admin/themes': {
+      id: '/admin/themes'
+      path: '/themes'
+      fullPath: '/admin/themes'
+      preLoaderRoute: typeof AdminThemesImport
+      parentRoute: typeof AdminImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -122,12 +136,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AdminRouteChildren {
+  AdminThemesRoute: typeof AdminThemesRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminEditorIdRoute: typeof AdminEditorIdRoute
   AdminPreviewIdRoute: typeof AdminPreviewIdRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminThemesRoute: AdminThemesRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminEditorIdRoute: AdminEditorIdRoute,
   AdminPreviewIdRoute: AdminPreviewIdRoute,
@@ -140,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRoute
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
+  '/admin/themes': typeof AdminThemesRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/editor/$id': typeof AdminEditorIdRoute
   '/admin/preview/$id': typeof AdminPreviewIdRoute
@@ -149,6 +166,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/login': typeof LoginRoute
+  '/admin/themes': typeof AdminThemesRoute
   '/admin': typeof AdminIndexRoute
   '/admin/editor/$id': typeof AdminEditorIdRoute
   '/admin/preview/$id': typeof AdminPreviewIdRoute
@@ -160,6 +178,7 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
+  '/admin/themes': typeof AdminThemesRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/editor/$id': typeof AdminEditorIdRoute
   '/admin/preview/$id': typeof AdminPreviewIdRoute
@@ -172,6 +191,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/admin'
     | '/login'
+    | '/admin/themes'
     | '/admin/'
     | '/admin/editor/$id'
     | '/admin/preview/$id'
@@ -180,6 +200,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/login'
+    | '/admin/themes'
     | '/admin'
     | '/admin/editor/$id'
     | '/admin/preview/$id'
@@ -189,6 +210,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/admin'
     | '/login'
+    | '/admin/themes'
     | '/admin/'
     | '/admin/editor/$id'
     | '/admin/preview/$id'
@@ -234,6 +256,7 @@ export const routeTree = rootRoute
     "/admin": {
       "filePath": "admin.tsx",
       "children": [
+        "/admin/themes",
         "/admin/",
         "/admin/editor/$id",
         "/admin/preview/$id"
@@ -241,6 +264,10 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/admin/themes": {
+      "filePath": "admin/themes.tsx",
+      "parent": "/admin"
     },
     "/admin/": {
       "filePath": "admin/index.tsx",

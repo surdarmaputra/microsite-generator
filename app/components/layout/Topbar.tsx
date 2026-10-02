@@ -10,6 +10,7 @@ interface TopbarProps {
 
 function Breadcrumb({ pathname }: { pathname: string }) {
   const isEditor = pathname.startsWith('/admin/editor/')
+  const isThemes = pathname.startsWith('/admin/themes')
 
   return (
     <nav aria-label="Breadcrumb">
@@ -28,6 +29,12 @@ function Breadcrumb({ pathname }: { pathname: string }) {
               </span>
             </li>
           </>
+        ) : isThemes ? (
+          <li>
+            <span className="text-ink-primary font-medium" aria-current="page">
+              Themes
+            </span>
+          </li>
         ) : (
           <li>
             <span className="text-ink-primary font-medium" aria-current="page">
