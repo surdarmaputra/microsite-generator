@@ -1,6 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { listThemes } from '~/components/themes'
 import { ThemeCard } from '~/components/theme-preview/ThemeCard'
+import { Button } from '~/components/ui/Button'
+import { resolveTheme } from '~/lib/doc'
+import { useNewSiteDialog } from '~/components/admin/NewSiteDialog'
 
 export const Route = createFileRoute('/admin/themes')({
   component: ThemesPage,
@@ -8,6 +11,7 @@ export const Route = createFileRoute('/admin/themes')({
 
 function ThemesPage() {
   const themes = listThemes()
+  const { open } = useNewSiteDialog()
 
   return (
     <div className="flex flex-col gap-6">
@@ -21,7 +25,15 @@ function ThemesPage() {
       </div>
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {themes.map((theme) => (
-          <ThemeCard key={theme.id} theme={theme} />
+          <ThemeCard
+            key={theme.id}
+            theme={theme}
+            footer={
+              <Button size="sm" onClick={() => open({ theme: resolveTheme(theme.id) })}>
+                Create website
+              </Button>
+            }
+          />
         ))}
       </div>
     </div>

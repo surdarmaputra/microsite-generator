@@ -117,6 +117,22 @@ describe('createSiteFn', () => {
     expect(values.draftDoc.meta.title).toBe('My Site')
     expect(values.draftVersion).toBe(1)
   })
+  it('stores the given theme in draftDoc.theme', async () => {
+    h.results.push([{ id: ID, slug: 'ok' }])
+    await call(createSiteFn, { name: 'My Site', slug: 'ok', theme: 'modern' })
+    const values = h.calls.find(c => c[0] === 'values')![1][0] as any
+    expect(values.draftDoc.theme).toBe('modern')
+  })
+  it('defaults theme to basic when omitted', async () => {
+    h.results.push([{ id: ID, slug: 'ok' }])
+    await call(createSiteFn, { name: 'My Site', slug: 'ok' })
+    const values = h.calls.find(c => c[0] === 'values')![1][0] as any
+    expect(values.draftDoc.theme).toBe('basic')
+  })
+  it('rejects an unknown theme', async () => {
+    await expect(call(createSiteFn, { name: 'My Site', slug: 'ok', theme: 'unknown-theme' })).rejects.toThrow()
+    expect(callNames()).not.toContain('insert')
+  })
 })
 
 describe('saveDraftFn', () => {

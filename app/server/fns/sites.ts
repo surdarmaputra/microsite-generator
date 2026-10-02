@@ -2,12 +2,12 @@ import { createServerFn } from '@tanstack/start-client-core'
 import { eq, and, isNotNull, sql } from 'drizzle-orm'
 import { db } from '~/server/db'
 import { microsites } from '~/server/db/schema'
-import { DocSchema, emptyDoc, isReservedSlug } from '~/lib/doc'
+import { DocSchema, emptyDoc, isReservedSlug, ThemeSchema } from '~/lib/doc'
 import { publishValues, purgeSite, UNPUBLISH_VALUES } from '~/lib/publish'
 import { sanitizeBlockHtml, sanitizeCtaHref } from '~/lib/sanitize'
 import { requireAuth } from './auth'
 import { z } from 'zod'
-import type { Doc } from '~/lib/doc'
+import type { Doc, Theme } from '~/lib/doc'
 
 function sanitizeDoc(doc: Doc): Doc {
   return {
@@ -50,10 +50,11 @@ export const getSiteFn = createServerFn()
   })
 
 export const createSiteFn = createServerFn({ method: 'POST' })
-  .validator((data: { name: string; slug: string }) => {
+  .validator((data: { name: string; slug: string; theme?: Theme }) => {
     return z.object({
       name: z.string().min(1).max(200),
       slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
+      theme: ThemeSchema,
     }).parse(data)
   })
   .handler(async ({ data }) => {
@@ -62,7 +63,7 @@ export const createSiteFn = createServerFn({ method: 'POST' })
     const [site] = await db.insert(microsites).values({
       name: data.name,
       slug: data.slug,
-      draftDoc: { ...emptyDoc(), meta: { ...emptyDoc().meta, title: data.name } },
+      draftDoc: { ...emptyDoc(), meta: { ...emptyDoc().meta, title: data.name }, theme: data.theme },
       draftVersion: 1,
     }).returning()
     return site!

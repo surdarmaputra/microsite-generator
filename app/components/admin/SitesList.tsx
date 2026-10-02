@@ -21,12 +21,12 @@ import {
   DropdownMenuSeparator,
 } from '~/components/ui/DropdownMenu'
 import {
-  createSiteFn,
   deleteSiteFn,
   duplicateSiteFn,
   unpublishFn,
 } from '~/server/fns/sites'
 import { deriveSiteStatus } from '~/lib/doc'
+import { useNewSiteDialog } from '~/components/admin/NewSiteDialog'
 
 interface SiteRow {
   id: string
@@ -47,11 +47,7 @@ interface Props {
 
 export function SitesList({ sites, onRefresh }: Props) {
   const navigate = useNavigate()
-  const [newOpen, setNewOpen] = useState(false)
-  const [newName, setNewName] = useState('')
-  const [newSlug, setNewSlug] = useState('')
-  const [creating, setCreating] = useState(false)
-  const [createError, setCreateError] = useState<string | null>(null)
+  const { open } = useNewSiteDialog()
 
   const [dupOpen, setDupOpen] = useState(false)
   const [dupId, setDupId] = useState<string | null>(null)
@@ -65,21 +61,6 @@ export function SitesList({ sites, onRefresh }: Props) {
   const [unpublishId, setUnpublishId] = useState<string | null>(null)
   const [unpublishing, setUnpublishing] = useState(false)
 
-  const handleCreate = async () => {
-    setCreateError(null)
-    setCreating(true)
-    try {
-      const site = await createSiteFn({ data: { name: newName, slug: newSlug } })
-      setNewOpen(false)
-      setNewName('')
-      setNewSlug('')
-      await navigate({ to: '/admin/editor/$id', params: { id: site.id } })
-    } catch (e) {
-      setCreateError(e instanceof Error ? e.message : 'Error creating site')
-    } finally {
-      setCreating(false)
-    }
-  }
 
   const handleDuplicate = async () => {
     if (!dupId) return
@@ -137,7 +118,7 @@ export function SitesList({ sites, onRefresh }: Props) {
             {sites.length} {sites.length === 1 ? 'site' : 'sites'}
           </p>
         </div>
-        <Button onClick={() => setNewOpen(true)}>
+        <Button onClick={() => open()}>
           <Plus size={15} /> New site
         </Button>
       </div>
@@ -147,7 +128,7 @@ export function SitesList({ sites, onRefresh }: Props) {
           <Globe size={32} className="text-ink-secondary mx-auto mb-3 opacity-40" />
           <p className="text-caption font-medium text-ink-primary">No sites yet</p>
           <p className="text-caption text-ink-secondary mt-1">Create your first microsite to get started.</p>
-          <Button className="mt-4" onClick={() => setNewOpen(true)}>
+          <Button className="mt-4" onClick={() => open()}>
             <Plus size={15} /> New site
           </Button>
         </div>
@@ -282,39 +263,6 @@ export function SitesList({ sites, onRefresh }: Props) {
         </div>
       )}
 
-      {/* New site dialog */}
-      <Dialog open={newOpen} onOpenChange={setNewOpen}>
-        <DialogContent>
-          <DialogBody>
-            <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary mb-4">
-              New site
-            </DialogTitle>
-            <div className="flex flex-col gap-3">
-              <Input
-                label="Name"
-                value={newName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)}
-                placeholder="My Campaign"
-              />
-              <Input
-                label="Slug"
-                value={newSlug}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setNewSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))
-                }
-                placeholder="my-campaign"
-              />
-              {createError && <p className="text-caption text-danger">{createError}</p>}
-            </div>
-          </DialogBody>
-          <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setNewOpen(false)}>Cancel</Button>
-            <Button size="sm" disabled={creating || !newName || !newSlug} onClick={handleCreate}>
-              {creating ? 'Creating…' : 'Create'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Duplicate dialog */}
       <Dialog open={dupOpen} onOpenChange={setDupOpen}>
