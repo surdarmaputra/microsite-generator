@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect, useLocation } from '@tanstack/react-
 import { getAuthFn } from '~/server/fns/auth'
 import { ToastProvider } from '~/components/ui/Toast'
 import { AdminShell } from '~/components/layout/AdminShell'
+import { NewSiteDialogProvider } from '~/components/admin/NewSiteDialog'
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: async () => {
@@ -29,9 +30,11 @@ function AdminLayout() {
 
   return (
     <ToastProvider>
-      <AdminShell username={username}>
-        <Outlet />
-      </AdminShell>
+      <NewSiteDialogProvider>
+        <AdminShell username={username}>
+          <Outlet />
+        </AdminShell>
+      </NewSiteDialogProvider>
     </ToastProvider>
   )
 }
