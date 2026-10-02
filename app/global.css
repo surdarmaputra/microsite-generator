@@ -155,21 +155,10 @@
   height: auto;
 }
 
-/* CTA outline variant — solid blue button with animated spinning gradient border */
-@property --cta-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes cta-border-spin {
-  to { --cta-angle: 360deg; }
-}
-
-@keyframes cta-shimmer-slide {
-  from { transform: translateX(-200%); }
-  to { transform: translateX(200%); }
-}
+/* Legacy CTA classes — the original blocks still render these until Stage 3
+ * switches BlockRenderer to the theme registry. The animations they use
+ * (@property --cta-angle, cta-border-spin, cta-shimmer-slide) now live in
+ * app/components/themes/basic/theme.css, which Stage 3 imports here. */
 
 /* Wrapper that provides the spinning gradient border */
 .cta-outline-wrap {
