@@ -145,8 +145,8 @@ test('themes page previews every theme', async ({ page }) => {
   await expect(editorPreview.locator('[data-theme="modern"]')).toBeVisible()
 
   // 10. Switch theme via visual picker
-  await page.getByRole('button', { name: 'Theme' }).click()
-  await page.getByRole('button', { name: 'Use Basic theme' }).click()
+  await page.getByRole('button', { name: 'Theme', exact: true }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Use Basic theme' }).click()
 
   // 11. Dialog closes and preview updates to basic
   await expect(page.getByRole('dialog')).not.toBeVisible()
