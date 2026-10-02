@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { getSiteFn } from '~/server/fns/sites'
 import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 import type { Doc } from '~/lib/doc'
-import { emptyDoc } from '~/lib/doc'
+import { emptyDoc, resolveTheme } from '~/lib/doc'
 
 export const Route = createFileRoute('/admin/preview/$id')({
   loader: ({ params }) => getSiteFn({ data: { id: params.id } }),
@@ -26,10 +26,12 @@ function PreviewPage() {
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
+  const theme = resolveTheme(doc.theme)
+
   return (
-    <div className="public-page" style={{ maxWidth: 390, margin: '0 auto' }}>
+    <div className="public-page" data-theme={theme} style={{ maxWidth: 390, margin: '0 auto' }}>
       {doc.blocks.map(block => (
-        <BlockRenderer key={block.id} block={block} isPreview />
+        <BlockRenderer key={block.id} block={block} theme={theme} isPreview />
       ))}
     </div>
   )

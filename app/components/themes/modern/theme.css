@@ -156,8 +156,8 @@
   display: block;
   padding: 2px;
   border-radius: 9999px;
-  background: conic-gradient(from var(--cta-angle), #b8956a, #d4af7a, #8b6f47, #c9a574, #b8956a);
-  animation: cta-border-spin 3s linear infinite;
+  background: conic-gradient(from var(--modern-cta-angle), #b8956a, #d4af7a, #8b6f47, #c9a574, #b8956a);
+  animation: modern-cta-border-spin 3s linear infinite;
 }
 
 /* Glass variant — gold shimmer highlight */
@@ -171,24 +171,24 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
-  animation: cta-shimmer-slide 2.2s ease-in-out infinite;
+  animation: modern-cta-shimmer-slide 2.2s ease-in-out infinite;
   pointer-events: none;
 }
 
 /* CTA animations — owned by this theme */
-@property --cta-angle {
+@property --modern-cta-angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }
 
-@keyframes cta-border-spin {
+@keyframes modern-cta-border-spin {
   to {
-    --cta-angle: 360deg;
+    --modern-cta-angle: 360deg;
   }
 }
 
-@keyframes cta-shimmer-slide {
+@keyframes modern-cta-shimmer-slide {
   from {
     transform: translateX(-200%);
   }

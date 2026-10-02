@@ -3,8 +3,25 @@ import {
   DocSchema,
   deriveSiteStatus,
   isReservedSlug,
+  resolveTheme,
   toPublicDoc,
 } from '~/lib/doc'
+
+// ─── resolveTheme ────────────────────────────────────────────────────────────
+
+describe('resolveTheme', () => {
+  it('keeps a known theme', () => {
+    expect(resolveTheme('modern')).toBe('modern')
+  })
+
+  it('falls back to basic for docs saved before themes existed', () => {
+    expect(resolveTheme(undefined)).toBe('basic')
+  })
+
+  it('falls back to basic for an unknown theme id', () => {
+    expect(resolveTheme('aurora')).toBe('basic')
+  })
+})
 
 // ─── DocSchema.parse ─────────────────────────────────────────────────────────
 

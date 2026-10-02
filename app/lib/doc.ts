@@ -3,6 +3,16 @@ import { z } from 'zod'
 export const ThemeSchema = z.enum(['basic', 'modern']).default('basic')
 export type Theme = z.infer<typeof ThemeSchema>
 
+/**
+ * Stored docs are read from JSONB without parsing, so rows saved before themes
+ * existed have no `theme`. Every render surface resolves through here: missing
+ * or unknown values fall back to the default theme.
+ */
+export function resolveTheme(theme: unknown): Theme {
+  const parsed = ThemeSchema.safeParse(theme)
+  return parsed.success ? parsed.data : ThemeSchema.parse(undefined)
+}
+
 export const SpaceSchema = z.enum(['-lg', '-md', '-sm', '0', 'sm', 'md', 'lg', 'xl'])
 export type Space = z.infer<typeof SpaceSchema>
 

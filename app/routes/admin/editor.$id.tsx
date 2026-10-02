@@ -7,6 +7,8 @@ import { BlockStack } from '~/components/editor/BlockStack'
 import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 import { Input } from '~/components/ui/Input'
 import { Button } from '~/components/ui/Button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/Select'
+import { listThemes } from '~/components/themes'
 import {
   Dialog,
   DialogContent,
@@ -17,9 +19,8 @@ import {
 } from '~/components/ui/Dialog'
 import { Drawer, DrawerContent, DrawerCloseButton } from '~/components/ui/Drawer'
 import { StatusBadge } from '~/components/admin/StatusBadge'
-import { deriveSiteStatus } from '~/lib/doc'
+import { deriveSiteStatus, emptyDoc, resolveTheme } from '~/lib/doc'
 import type { Doc, Block, Meta } from '~/lib/doc'
-import { emptyDoc } from '~/lib/doc'
 
 export const Route = createFileRoute('/admin/editor/$id')({
   loader: ({ params }) => getSiteFn({ data: { id: params.id } }),
@@ -34,7 +35,8 @@ function EditorPage() {
   const { id } = Route.useParams()
   const router = useRouter()
 
-  const initialDoc: Doc = (site.draftDoc as Doc) ?? emptyDoc()
+  const draftDoc = (site.draftDoc as Doc | null) ?? emptyDoc()
+  const initialDoc: Doc = { ...draftDoc, theme: resolveTheme(draftDoc.theme) }
 
   const [doc, setDoc] = useState<Doc>(initialDoc)
   const [version, setVersion] = useState(site.draftVersion)
@@ -93,6 +95,10 @@ function EditorPage() {
     handleDocChange({ ...doc, meta })
   }
 
+  const handleThemeChange = (theme: string) => {
+    handleDocChange({ ...doc, theme: resolveTheme(theme) })
+  }
+
   const handlePublish = async () => {
     setPublishing(true)
     try {
@@ -133,6 +139,16 @@ function EditorPage() {
           <StatusBadge status={status} />
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <Select value={doc.theme} onValueChange={handleThemeChange}>
+            <SelectTrigger className="h-8 w-44 whitespace-nowrap" aria-label="Theme">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {listThemes().map(theme => (
+                <SelectItem key={theme.id} value={theme.id}>{theme.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {saveLabel && (
             <span className={`text-micro ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
               {saveLabel}
@@ -180,9 +196,9 @@ function EditorPage() {
             className="rounded-card shadow-raised w-full max-w-[390px] overflow-y-auto"
             style={{ height: '80vh', background: 'white' }}
           >
-            <div className="public-page w-full">
+            <div className="public-page w-full" data-theme={doc.theme}>
               {doc.blocks.map(block => (
-                <BlockRenderer key={block.id} block={block} isPreview />
+                <BlockRenderer key={block.id} block={block} theme={doc.theme} isPreview />
               ))}
             </div>
           </div>

@@ -1,8 +1,5 @@
-import { HeroBlock } from './HeroBlock'
-import { CardBlock } from './CardBlock'
-import { TrimmedBlock } from './TrimmedBlock'
-import { CtaBlock } from './CtaBlock'
-import type { Block, Layout } from '~/lib/doc'
+import { getTheme } from '~/components/themes'
+import type { Block, Layout, Theme } from '~/lib/doc'
 
 function layoutStyles(layout: Layout): React.CSSProperties {
   const spaceMap: Record<string, string> = {
@@ -17,14 +14,25 @@ function layoutStyles(layout: Layout): React.CSSProperties {
   }
 }
 
-export function BlockRenderer({ block, isPreview }: { block: Block; isPreview?: boolean }) {
-  const style = layoutStyles(block.layout)
-  const wrapper = (children: React.ReactNode) => (
-    <div style={style} key={block.id}>{children}</div>
-  )
-  if (block.type === 'hero') return wrapper(<HeroBlock block={block} isPreview={isPreview} />)
-  if (block.type === 'card') return wrapper(<CardBlock block={block} isPreview={isPreview} />)
-  if (block.type === 'trimmed') return wrapper(<TrimmedBlock block={block} isPreview={isPreview} />)
-  if (block.type === 'cta') return wrapper(<CtaBlock block={block} isPreview={isPreview} />)
-  return null
+/**
+ * Renders one block with the given theme's components. The theme's CSS only
+ * applies inside an ancestor carrying the matching `data-theme` attribute.
+ */
+export function BlockRenderer({ block, isPreview = false, theme = 'basic' }: {
+  block: Block
+  isPreview?: boolean
+  theme?: Theme
+}) {
+  const { blocks } = getTheme(theme)
+  const content = (() => {
+    switch (block.type) {
+      case 'hero': return <blocks.hero block={block} isPreview={isPreview} />
+      case 'card': return <blocks.card block={block} isPreview={isPreview} />
+      case 'trimmed': return <blocks.trimmed block={block} isPreview={isPreview} />
+      case 'cta': return <blocks.cta block={block} isPreview={isPreview} />
+      default: return null
+    }
+  })()
+  if (!content) return null
+  return <div style={layoutStyles(block.layout)}>{content}</div>
 }

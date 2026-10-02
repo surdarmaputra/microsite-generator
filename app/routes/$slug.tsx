@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 import { getLiveDocFn } from '~/server/fns/sites'
-import { toPublicDoc } from '~/lib/doc'
+import { resolveTheme, toPublicDoc } from '~/lib/doc'
 import { publicCacheHeaders } from '~/lib/cache'
 import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 
@@ -48,6 +48,7 @@ export const Route = createFileRoute('/$slug')({
 
 function SlugPage() {
   const { doc } = Route.useLoaderData()
+  const theme = resolveTheme(doc.theme)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -87,9 +88,9 @@ function SlugPage() {
   }, [])
 
   return (
-    <main className="public-page" ref={containerRef}>
+    <main className="public-page" data-theme={theme} ref={containerRef}>
       {doc.blocks.map(block => (
-        <BlockRenderer key={block.id} block={block} />
+        <BlockRenderer key={block.id} block={block} theme={theme} />
       ))}
     </main>
   )
