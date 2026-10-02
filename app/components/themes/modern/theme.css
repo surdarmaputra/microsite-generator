@@ -1,0 +1,198 @@
+/* Modern Classy theme — warm, editorial, boutique. All styling scoped to [data-theme="modern"]. */
+
+[data-theme="modern"] {
+  --theme-page-bg: #faf7f2;
+  --theme-ink: #1a1a1a;
+  --theme-ink-secondary: #5c5450;
+  --theme-accent: #b8956a;
+  --theme-accent-hover: #a68254;
+  --theme-border: #e8e2d8;
+  --theme-card-shadow: 0 4px 24px -8px rgba(120, 100, 60, 0.08);
+}
+
+/* Page surface — warm cream paper */
+.public-page[data-theme="modern"] {
+  background: var(--theme-page-bg);
+  color: var(--theme-ink);
+}
+
+/* Editorial headings — display face, tighter tracking */
+[data-theme="modern"] [data-block-type] h1,
+[data-theme="modern"] [data-block-type] h2,
+[data-theme="modern"] [data-block-type] h3,
+[data-theme="modern"] [data-block-type] h4 {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--theme-ink);
+}
+
+/* Hero */
+[data-theme="modern"] .theme-hero-split {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #f5f0e8, #faf7f2);
+}
+
+[data-theme="modern"] .theme-hero-banner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to bottom, rgba(184, 149, 106, 0.1), rgba(250, 247, 242, 0));
+}
+
+[data-theme="modern"] .theme-hero-content {
+  width: 100%;
+}
+
+/* Card — borderless, soft warm shadow, larger radius */
+[data-theme="modern"] .theme-card {
+  margin: 0 1rem;
+  border: none;
+  border-radius: 1.5rem;
+  background: #ffffff;
+  box-shadow: var(--theme-card-shadow);
+  padding: 1.25rem 1rem;
+}
+
+/* Trimmed */
+[data-theme="modern"] .theme-trimmed {
+  position: relative;
+  padding: 0 1rem;
+}
+
+[data-theme="modern"] .theme-trimmed-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 3rem 0 1rem;
+  background: linear-gradient(to bottom, transparent, #faf7f2);
+}
+
+[data-theme="modern"] .theme-trimmed-toggle {
+  cursor: pointer;
+  border: 1px solid var(--theme-border);
+  background: #ffffff;
+  color: var(--theme-ink);
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  transition: background-color 0.15s ease;
+}
+
+[data-theme="modern"] .theme-trimmed-toggle:hover {
+  background: #f5f0e8;
+}
+
+[data-theme="modern"] .theme-trimmed-toggle--less {
+  display: block;
+  margin: 0.75rem auto 0;
+}
+
+/* CTA */
+[data-theme="modern"] .theme-cta {
+  padding: 0 1rem;
+}
+
+[data-theme="modern"] .theme-cta-solid {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--theme-accent);
+  color: var(--theme-ink);
+  border-radius: 9999px;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+[data-theme="modern"] .theme-cta-solid:hover {
+  background: var(--theme-accent-hover);
+}
+
+[data-theme="modern"] .theme-cta-solid:active {
+  transform: scale(0.97);
+}
+
+[data-theme="modern"] .theme-cta-solid:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--theme-page-bg), 0 0 0 4px var(--theme-accent);
+}
+
+[data-theme="modern"] .theme-cta-label {
+  position: relative;
+  z-index: 10;
+}
+
+/* Arrow — same stroke arrow as the base theme, drawn via mask so it inherits text colour */
+[data-theme="modern"] .theme-cta-arrow {
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M12 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M12 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 0.15s ease;
+}
+
+[data-theme="modern"] .theme-cta-solid:hover .theme-cta-arrow {
+  transform: translateX(4px);
+}
+
+/* Outline variant — spinning gold gradient border */
+[data-theme="modern"] .theme-cta-outline-wrap {
+  display: block;
+  padding: 2px;
+  border-radius: 9999px;
+  background: conic-gradient(from var(--cta-angle), #b8956a, #d4af7a, #8b6f47, #c9a574, #b8956a);
+  animation: cta-border-spin 3s linear infinite;
+}
+
+/* Glass variant — gold shimmer highlight */
+[data-theme="modern"] .theme-cta-glass {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="modern"] .theme-cta-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  animation: cta-shimmer-slide 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* CTA animations — owned by this theme */
+@property --cta-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes cta-border-spin {
+  to {
+    --cta-angle: 360deg;
+  }
+}
+
+@keyframes cta-shimmer-slide {
+  from {
+    transform: translateX(-200%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
