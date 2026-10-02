@@ -130,7 +130,7 @@ test('themes page previews every theme', async ({ page }) => {
   // 7. Click "Create website" on the Modern card and verify the dialog Theme preset
   await page.getByRole('article', { name: 'Modern' }).getByRole('button', { name: 'Create website' }).click()
   const newSiteDialog = page.getByRole('dialog')
-  await expect(newSiteDialog.getByRole('button', { name: 'Theme' })).toContainText('Modern')
+  await expect(newSiteDialog.getByRole('combobox', { name: 'Theme' })).toContainText('Modern')
 
   // 8. Fill in Name and Slug, then create
   await newSiteDialog.getByLabel('Name').fill('Modern Theme Test')
