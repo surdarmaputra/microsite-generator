@@ -143,4 +143,15 @@ test('themes page previews every theme', async ({ page }) => {
   await page.waitForURL(/\/admin\/editor\//)
   const editorPreview = page.getByText('Preview (390px)').locator('..')
   await expect(editorPreview.locator('[data-theme="modern"]')).toBeVisible()
+
+  // 10. Switch theme via visual picker
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('button', { name: 'Use Basic theme' }).click()
+
+  // 11. Dialog closes and preview updates to basic
+  await expect(page.getByRole('dialog')).not.toBeVisible()
+  await expect(editorPreview.locator('[data-theme="basic"]')).toBeVisible()
+
+  // 12. Autosave confirms the change
+  await expect(page.getByText(/saved/i)).toBeVisible({ timeout: 15_000 })
 })

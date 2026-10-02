@@ -1,14 +1,14 @@
 'use client'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useCallback, useRef, useState } from 'react'
-import { ExternalLink, PencilLine } from 'lucide-react'
+import { ExternalLink, PencilLine, Palette } from 'lucide-react'
 import { getSiteFn, saveDraftFn, publishFn } from '~/server/fns/sites'
 import { BlockStack } from '~/components/editor/BlockStack'
 import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 import { Input } from '~/components/ui/Input'
 import { Button } from '~/components/ui/Button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/Select'
-import { listThemes } from '~/components/themes'
+import { getTheme } from '~/components/themes'
+import { ThemePickerDialog } from '~/components/theme-preview/ThemePickerDialog'
 import {
   Dialog,
   DialogContent,
@@ -45,6 +45,7 @@ function EditorPage() {
   const [publishOpen, setPublishOpen] = useState(false)
   const [publishing, setPublishing] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [themeOpen, setThemeOpen] = useState(false)
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const versionRef = useRef(version)
@@ -137,16 +138,16 @@ function EditorPage() {
           <StatusBadge status={status} />
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Select value={doc.theme} onValueChange={handleThemeChange}>
-            <SelectTrigger className="h-8 w-44 whitespace-nowrap" aria-label="Theme">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {listThemes().map(theme => (
-                <SelectItem key={theme.id} value={theme.id}>{theme.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Button
+            variant="outline"
+            size="sm"
+            aria-label="Theme"
+            onClick={() => setThemeOpen(true)}
+            className="flex items-center gap-1.5"
+          >
+            <Palette size={14} />
+            {getTheme(doc.theme).label}
+          </Button>
           {saveLabel && (
             <span className={`text-micro ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
               {saveLabel}
@@ -248,6 +249,13 @@ function EditorPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ThemePickerDialog
+        open={themeOpen}
+        onOpenChange={setThemeOpen}
+        value={doc.theme}
+        onChange={handleThemeChange}
+      />
 
     </div>
   )
