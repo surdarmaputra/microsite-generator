@@ -123,7 +123,7 @@ function EditorPage() {
     : ''
 
   return (
-    <div className="flex h-screen flex-col bg-surface-page" style={{ maxWidth: 'none' }}>
+    <div className="flex h-[calc(100dvh-3.5rem)] flex-col bg-surface-page" style={{ maxWidth: 'none' }}>
       {conflictBanner && (
         <div className="bg-warning/10 border-b border-warning/20 px-6 py-2 text-caption text-warning">
           Edited in another tab — please reload.
@@ -133,8 +133,6 @@ function EditorPage() {
       {/* Header */}
       <div className="border-hairline flex flex-wrap items-center gap-x-3 gap-y-2 border-b bg-surface-card px-4 py-3">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <a href="/admin" className="text-caption text-ink-secondary hover:text-ink-primary transition-colors shrink-0">← Sites</a>
-          <span className="text-ink-secondary opacity-40 shrink-0">/</span>
           <span className="text-caption font-medium text-ink-primary truncate">{site.name}</span>
           <StatusBadge status={status} />
         </div>

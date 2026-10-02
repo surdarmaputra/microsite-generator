@@ -57,7 +57,8 @@ app/
     themes/     # one dir per theme (block components + scoped theme.css); register in themes/index.ts
     editor/     # admin Lexical editor + nodes
     admin/      # admin-specific components
-    ui/         # shadcn primitives
+    layout/       # AdminShell, Sidebar, Topbar, nav.ts — admin shell
+    ui/           # shadcn primitives
 tests/
   unit/         # vitest unit tests
   component/    # vitest browser component tests
