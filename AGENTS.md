@@ -53,7 +53,8 @@ app/
     fns/        # createServerFn handlers (sites, auth, upload)
   routes/       # TanStack Start file-based routes
   components/
-    blocks/     # public block renderers (Hero, Card, Trimmed, CTA)
+    blocks/     # BlockRenderer — dispatches each block to the active theme
+    themes/     # one dir per theme (block components + scoped theme.css); register in themes/index.ts
     editor/     # admin Lexical editor + nodes
     admin/      # admin-specific components
     ui/         # shadcn primitives

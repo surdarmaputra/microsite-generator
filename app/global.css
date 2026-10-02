@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/bricolage-grotesque';
+/* Theme styles — each file is scoped to its own [data-theme="…"]. */
+@import './components/themes/basic/theme.css';
+@import './components/themes/modern/theme.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -153,35 +156,6 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   height: auto;
-}
-
-/* Legacy CTA classes — the original blocks still render these until Stage 3
- * switches BlockRenderer to the theme registry. The animations they use
- * (@property --cta-angle, cta-border-spin, cta-shimmer-slide) now live in
- * app/components/themes/basic/theme.css, which Stage 3 imports here. */
-
-/* Wrapper that provides the spinning gradient border */
-.cta-outline-wrap {
-  padding: 2px;
-  border-radius: 9999px;
-  background: conic-gradient(from var(--cta-angle), #0f77ff, #7c3aed, #06b6d4, #ec4899, #0f77ff);
-  animation: cta-border-spin 3s linear infinite;
-  display: block;
-}
-
-/* Glass variant — solid blue with shimmer highlight */
-.cta-glass {
-  position: relative;
-  overflow: hidden;
-}
-
-.cta-glass::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
-  animation: cta-shimmer-slide 2.2s ease-in-out infinite;
-  pointer-events: none;
 }
 
 @media (max-width: 767px) {
