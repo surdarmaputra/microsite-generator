@@ -103,3 +103,27 @@ test('409 conflict: saving with stale version shows banner', async ({ page, cont
     page.getByText(/conflict|stale|out of date|another user|another tab/i)
   ).toBeVisible({ timeout: 15_000 })
 })
+
+test('themes page previews every theme', async ({ page }) => {
+  // 1. Log in
+  await login(page)
+
+  // 2. Click Themes in main navigation
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Themes' }).click()
+
+  // 3. Expect the heading "Themes"
+  await expect(page.getByRole('heading', { name: 'Themes' })).toBeVisible()
+
+  // 4. Expect Basic and Modern cards
+  await expect(page.getByRole('article', { name: 'Basic' })).toBeVisible()
+  await expect(page.getByRole('article', { name: 'Modern' })).toBeVisible()
+
+  // 5. Click "Expand Modern preview"
+  await page.getByRole('button', { name: 'Expand Modern preview' }).click()
+
+  // 6. Expect the dialog to contain [data-theme="modern"], then close it
+  const dialog = page.getByRole('dialog')
+  await expect(dialog.locator('[data-theme="modern"]')).toBeVisible()
+  await dialog.getByRole('button', { name: 'Close dialog' }).click()
+  await expect(dialog).not.toBeVisible()
+})

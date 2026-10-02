@@ -54,6 +54,7 @@ app/
   routes/       # TanStack Start file-based routes
   components/
     blocks/     # BlockRenderer — dispatches each block to the active theme
+    theme-preview/  # ThemePreview, ThemeCard, ThemePreviewDialog, sampleDoc
     themes/     # one dir per theme (block components + scoped theme.css); register in themes/index.ts
     editor/     # admin Lexical editor + nodes
     admin/      # admin-specific components
