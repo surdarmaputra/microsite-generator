@@ -137,7 +137,10 @@ test('themes page previews every theme', async ({ page }) => {
   await newSiteDialog.getByLabel('Slug').fill(`theme-${Date.now()}`)
   await newSiteDialog.getByRole('button', { name: 'Create' }).click()
 
-  // 9. Expect to land in the editor with the modern theme applied
+  // 9. Expect to land in the editor with the modern theme applied. The URL changes before the
+  //    editor renders, so scope to the editor's preview panel (the themes page and the closing
+  //    dialog also render [data-theme="modern"] previews).
   await page.waitForURL(/\/admin\/editor\//)
-  await expect(page.locator('[data-theme="modern"]')).toBeVisible()
+  const editorPreview = page.getByText('Preview (390px)').locator('..')
+  await expect(editorPreview.locator('[data-theme="modern"]')).toBeVisible()
 })
