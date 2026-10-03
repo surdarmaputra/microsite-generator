@@ -15,7 +15,7 @@ export function DeviceFrame({
         className,
       )}
     >
-      <div className="rounded-[1.5rem] overflow-hidden h-full" style={{ background: 'white' }}>
+      <div className="h-full overflow-y-auto rounded-[1.5rem] bg-white">
         {children}
       </div>
     </div>
