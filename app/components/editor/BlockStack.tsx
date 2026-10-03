@@ -8,6 +8,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  DialogBody,
   DialogFooter,
 } from '~/components/ui/Dialog'
 
@@ -120,20 +121,22 @@ export function BlockStack({ blocks, onChange }: Props) {
 
       <Dialog open={pickerOpen} onOpenChange={open => { setPickerOpen(open); if (!open) setInsertAt(null) }}>
         <DialogContent>
-          <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
-            Add block
-          </DialogTitle>
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            {(['hero', 'card', 'trimmed', 'cta'] as BlockType[]).map(type => (
-              <button
-                key={type}
-                onClick={() => addBlock(type)}
-                className="rounded-card border-hairline bg-surface-card hover:bg-surface-hover text-caption font-medium text-ink-primary border p-4 text-left capitalize transition-colors"
-              >
-                {type}
-              </button>
-            ))}
-          </div>
+          <DialogBody>
+            <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary">
+              Add block
+            </DialogTitle>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {(['hero', 'card', 'trimmed', 'cta'] as BlockType[]).map(type => (
+                <button
+                  key={type}
+                  onClick={() => addBlock(type)}
+                  className="rounded-card border-hairline bg-surface-card hover:bg-surface-hover text-caption font-medium text-ink-primary border p-4 text-left capitalize transition-colors"
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </DialogBody>
           <DialogFooter>
             <Button variant="outline" size="sm" onClick={() => { setPickerOpen(false); setInsertAt(null) }}>Cancel</Button>
           </DialogFooter>
