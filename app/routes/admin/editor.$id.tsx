@@ -131,38 +131,56 @@ function EditorPage() {
       )}
 
       {/* Header */}
-      <div className="border-hairline flex flex-wrap items-center gap-x-3 gap-y-2 border-b bg-surface-card px-4 py-3">
-        <div className="flex items-center gap-2 min-w-0 flex-1">
-          <span className="text-caption font-medium text-ink-primary truncate">{site.name}</span>
-          <StatusBadge status={status} />
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <ThemeSelector value={doc.theme} onChange={handleThemeChange} />
+      <div className="border-hairline flex flex-col md:flex-row md:items-center gap-x-3 gap-y-2 border-b bg-surface-card px-4 py-3">
+        {/* Mobile: row 1 (flex-row with title, save-state, view-site)
+            Desktop: dissolves via display:contents so children participate in the outer flex-row */}
+        <div className="flex items-center gap-2 md:contents">
+          <div className="flex items-center gap-2 min-w-0 flex-1 md:order-1">
+            <span className="text-caption font-medium text-ink-primary truncate">{site.name}</span>
+            <StatusBadge status={status} />
+          </div>
           {saveLabel && (
-            <span className={`text-micro ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
+            <span className={`text-micro shrink-0 md:order-3 ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
               {saveLabel}
             </span>
           )}
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleSave}
-            disabled={saveState === 'saving'}
-          >
-            Save
-          </Button>
           {!!site.publishedAt && (
             <a
               href={`/${site.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer inline-flex items-center gap-1.5 text-caption text-ink-secondary hover:text-ink-primary transition-colors"
+              aria-label="View site"
+              className="ml-auto md:ml-0 md:order-5 cursor-pointer inline-flex items-center gap-1.5 text-caption text-ink-secondary hover:text-ink-primary transition-colors"
             >
               <ExternalLink size={13} />
               <span className="hidden sm:inline">View site</span>
             </a>
           )}
-          <Button size="sm" onClick={() => setPublishOpen(true)}>
+        </div>
+        {/* Mobile: row 2 (full-width theme selector)
+            Desktop: order-2 between title and save-state */}
+        <ThemeSelector
+          value={doc.theme}
+          onChange={handleThemeChange}
+          className="w-full justify-start md:w-auto md:order-2 md:shrink-0"
+        />
+        {/* Mobile: row 3 (equal-width save + publish grid)
+            Desktop: dissolves via display:contents so Save and Publish participate in the outer flex-row */}
+        <div className="grid grid-cols-2 gap-2 md:contents">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleSave}
+            disabled={saveState === 'saving'}
+            className="w-full md:w-auto md:order-4"
+          >
+            Save
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => setPublishOpen(true)}
+            className="w-full md:w-auto md:order-6"
+          >
             Publish
           </Button>
         </div>
