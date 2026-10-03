@@ -23,7 +23,7 @@ export function ThemePickerDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-4xl">
         <div className="flex items-center justify-between p-4 pb-0">
           <DialogTitle className="font-display text-base font-semibold text-ink-primary">
             Choose theme
@@ -31,7 +31,7 @@ export function ThemePickerDialog({
           <DialogCloseButton onClose={() => onOpenChange(false)} />
         </div>
         <div className="max-h-[75vh] overflow-y-auto p-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {listThemes().map(theme => {
               const id = resolveTheme(theme.id)
               return (
