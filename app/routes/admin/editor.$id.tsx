@@ -9,6 +9,7 @@ import { Input } from '~/components/ui/Input'
 import { Button } from '~/components/ui/Button'
 import { getTheme } from '~/components/themes'
 import { ThemePickerDialog } from '~/components/theme-preview/ThemePickerDialog'
+import { DeviceFrame } from '~/components/theme-preview/DeviceFrame'
 import {
   Dialog,
   DialogContent,
@@ -191,16 +192,13 @@ function EditorPage() {
         {/* Preview panel — full width on mobile, 2/5 on desktop */}
         <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6">
           <div className="text-micro text-ink-secondary mb-3">Preview (390px)</div>
-          <div
-            className="rounded-card shadow-raised w-full max-w-[390px] overflow-y-auto"
-            style={{ height: '80vh', background: 'white' }}
-          >
+          <DeviceFrame className="h-[80vh]">
             <div className="public-page w-full" data-theme={doc.theme}>
               {doc.blocks.map(block => (
                 <BlockRenderer key={block.id} block={block} theme={doc.theme} isPreview />
               ))}
             </div>
-          </div>
+          </DeviceFrame>
         </div>
       </div>
 
