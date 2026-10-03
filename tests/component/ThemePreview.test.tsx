@@ -28,4 +28,10 @@ describe('ThemePreview', () => {
     expect(themeWrapper).toBeTruthy()
     expect(themeWrapper!.getAttribute('aria-hidden')).toBe('true')
   })
+
+  it('block 2 (sample-intro-card) has layout mt=-lg and z=1 (guards hero overlap)', () => {
+    const cardBlock = sampleDoc.blocks[1]!
+    expect(cardBlock.layout.mt).toBe('-lg')
+    expect(cardBlock.layout.z).toBe(1)
+  })
 })

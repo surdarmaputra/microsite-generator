@@ -23,13 +23,13 @@ function ThemesPage() {
           {themes.length} {themes.length === 1 ? 'theme' : 'themes'}
         </p>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
         {themes.map((theme) => (
           <ThemeCard
             key={theme.id}
             theme={theme}
             footer={
-              <Button size="sm" onClick={() => open({ theme: resolveTheme(theme.id) })}>
+              <Button size="sm" className="w-full" onClick={() => open({ theme: resolveTheme(theme.id) })}>
                 Create website
               </Button>
             }
