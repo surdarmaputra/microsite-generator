@@ -34,21 +34,46 @@ export const Route = createFileRoute('/admin/editor/$id')({
 function EditorPending() {
   return (
     <div className="flex h-[calc(100dvh-3.5rem)] flex-col bg-surface-page">
-      <div className="border-hairline flex h-14 items-center justify-between border-b px-4">
-        <div className="bg-surface-hover rounded-control animate-pulse h-5 w-48" />
-        <div className="flex items-center gap-2">
-          <div className="bg-surface-hover rounded-control animate-pulse h-8 w-20" />
-          <div className="bg-surface-hover rounded-control animate-pulse h-8 w-20" />
+      {/* Header skeleton */}
+      <div className="border-hairline flex flex-col md:flex-row md:items-center gap-x-3 gap-y-2 border-b bg-surface-card px-4 py-3">
+        {/* Mobile: row 1 — title + badge */}
+        <div className="flex items-center gap-2 md:contents">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="animate-pulse bg-surface-hover rounded-control h-5 w-40" />
+            <div className="animate-pulse bg-surface-hover rounded-control h-5 w-16" />
+          </div>
+        </div>
+        {/* Mobile: row 2 — theme selector; Desktop: order-2 shrink-0 */}
+        <div className="animate-pulse bg-surface-hover rounded-control h-8 w-full md:w-36 md:shrink-0" />
+        {/* Mobile: row 3 — Save + Publish grid; Desktop: two buttons */}
+        <div className="grid grid-cols-2 gap-2 md:contents">
+          <div className="animate-pulse bg-surface-hover rounded-control h-8 md:w-20" />
+          <div className="animate-pulse bg-surface-hover rounded-control h-8 md:w-20" />
         </div>
       </div>
-      <div className="flex flex-1 overflow-hidden">
-        <div className="border-hairline flex flex-col gap-3 border-r p-4 w-80">
-          <div className="bg-surface-hover rounded-control animate-pulse h-9 w-full" />
-          <div className="bg-surface-hover rounded-control animate-pulse h-24 w-full" />
-          <div className="bg-surface-hover rounded-control animate-pulse h-9 w-full" />
-          <div className="bg-surface-hover rounded-control animate-pulse h-9 w-full" />
+      {/* Body skeleton */}
+      <div className="flex flex-1 overflow-hidden min-h-0">
+        {/* Left pane — desktop only */}
+        <div className="hidden md:flex md:w-3/5 flex-col gap-4 overflow-y-auto p-6">
+          <div className="animate-pulse bg-surface-hover rounded-control h-9 w-full" />
+          <div className="animate-pulse bg-surface-hover rounded-control h-20 w-full" />
+          <div className="animate-pulse bg-surface-hover rounded-card h-24 w-full" />
+          <div className="animate-pulse bg-surface-hover rounded-card h-24 w-full" />
+          <div className="animate-pulse bg-surface-hover rounded-card h-24 w-full" />
         </div>
-        <div className="flex-1 bg-surface-hover animate-pulse" />
+        {/* Preview pane — full width on mobile, 2/5 on desktop */}
+        <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6 min-h-0 pb-6 md:pb-8">
+          {/* Device-frame skeleton */}
+          <div className="p-1 rounded-[1.75rem] bg-surface-hover w-full max-w-[390px] flex-1 min-h-0 flex flex-col overflow-hidden">
+            <div className="flex-1 bg-white rounded-[1.5rem] overflow-hidden flex flex-col gap-2 p-0">
+              <div className="animate-pulse bg-surface-hover h-32 w-full" />
+              <div className="animate-pulse bg-surface-hover rounded-card h-20 mx-4 -mt-6" />
+              <div className="animate-pulse bg-surface-hover rounded-control h-3 mx-4 w-3/4 mt-2" />
+              <div className="animate-pulse bg-surface-hover rounded-control h-3 mx-4 w-1/2" />
+              <div className="animate-pulse bg-surface-hover rounded-control h-3 mx-4 w-2/3" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -223,9 +248,9 @@ function EditorPage() {
         </div>
 
         {/* Preview panel — full width on mobile, 2/5 on desktop */}
-        <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6">
+        <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6 min-h-0 pb-6 md:pb-8">
           <div className="text-micro text-ink-secondary mb-3">Preview (390px)</div>
-          <DeviceFrame className="h-[80vh]">
+          <DeviceFrame className="min-h-0 flex-1">
             <div className="public-page w-full" data-theme={doc.theme}>
               {doc.blocks.map(block => (
                 <BlockRenderer key={block.id} block={block} theme={doc.theme} isPreview />

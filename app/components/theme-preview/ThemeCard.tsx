@@ -41,7 +41,7 @@ export function ThemeCard({ theme, footer, size = 'md', selected, onSelect }: Th
       <article
         aria-label={theme.label}
         className={cn(
-          'rounded-card border-hairline bg-surface-card shadow-card border overflow-hidden',
+          'rounded-card border-hairline bg-surface-card shadow-card border overflow-hidden flex h-full flex-col',
           selected && 'ring-2 ring-accent',
         )}
       >
@@ -69,7 +69,7 @@ export function ThemeCard({ theme, footer, size = 'md', selected, onSelect }: Th
           </div>
         )}
         {/* Body */}
-        <div className={cn(size === 'sm' ? 'p-3' : 'p-4')}>
+        <div className={cn(size === 'sm' ? 'p-3' : 'p-4', 'flex flex-1 flex-col')}>
           <div className="flex items-center gap-2">
             <h3 className={cn('font-display font-semibold text-ink-primary', size === 'sm' ? 'text-sm' : 'text-base')}>
               {theme.label}
@@ -79,7 +79,7 @@ export function ThemeCard({ theme, footer, size = 'md', selected, onSelect }: Th
           {size !== 'sm' && (
             <p className="text-caption text-ink-secondary mt-1">{theme.description}</p>
           )}
-          {footer && <div className="mt-4">{footer}</div>}
+          {footer && <div className="mt-auto pt-4">{footer}</div>}
         </div>
       </article>
       <ThemePreviewDialog theme={theme} open={dialogOpen} onOpenChange={setDialogOpen} />

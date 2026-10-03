@@ -9,7 +9,7 @@ export const sampleDoc: Doc = {
       type: 'hero',
       layout: { mt: '0', mb: '0', z: 0 },
       props: { variant: 'banner' },
-      html: '<img src="/theme-samples/hero.jpg" alt="A cosy café interior"><h2>Welcome to Brew &amp; Bloom</h2><p>A neighbourhood café where great coffee meets fresh food.</p>',
+      html: '<img src="/theme-samples/hero.jpg" alt="A cosy café interior">',
     },
     {
       id: 'sample-intro-card',

@@ -11,7 +11,7 @@ export function DeviceFrame({
   return (
     <div
       className={cn(
-        'shadow-raised w-full max-w-[390px] p-2 rounded-[2rem] bg-ink-primary/90',
+        'shadow-raised w-full max-w-[390px] p-1 rounded-[1.75rem] bg-ink-primary/90',
         className,
       )}
     >
