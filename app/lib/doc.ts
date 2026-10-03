@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const ThemeSchema = z.enum(['basic', 'modern']).default('basic')
+export const ThemeSchema = z.enum(['basic', 'modern', 'creator']).default('basic')
 export type Theme = z.infer<typeof ThemeSchema>
 
 /**

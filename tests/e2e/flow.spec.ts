@@ -114,15 +114,19 @@ test('themes page previews every theme', async ({ page }) => {
   // 3. Expect the heading "Themes"
   await expect(page.getByRole('heading', { name: 'Themes' })).toBeVisible()
 
-  // 4. Expect Basic and Modern Classy cards
+  // 4. Expect Basic, Modern Classy and Creator Pop cards
   await expect(page.getByRole('article', { name: 'Basic' })).toBeVisible()
   await expect(page.getByRole('article', { name: 'Modern Classy' })).toBeVisible()
+  await expect(page.getByRole('article', { name: 'Creator Pop' })).toBeVisible()
 
   // 5. Expand the Modern Classy preview
   await page.getByRole('button', { name: 'Expand Modern Classy preview' }).click()
 
-  // 6. Expect the dialog to contain [data-theme="modern"], then close it
+  // 6. Expect the dialog to contain [data-theme="modern"], toggle the desktop preview, then close it
   const dialog = page.getByRole('dialog')
+  await expect(dialog.locator('[data-theme="modern"]')).toBeVisible()
+  await dialog.getByRole('button', { name: 'Desktop' }).click()
+  await expect(dialog.getByRole('button', { name: 'Desktop' })).toHaveAttribute('aria-pressed', 'true')
   await expect(dialog.locator('[data-theme="modern"]')).toBeVisible()
   await dialog.getByRole('button', { name: 'Close dialog' }).click()
   await expect(dialog).not.toBeVisible()
@@ -151,7 +155,7 @@ test('themes page previews every theme', async ({ page }) => {
   //    editor renders, so scope to the editor's preview panel (the themes page and the closing
   //    dialog also render [data-theme="modern"] previews).
   await page.waitForURL(/\/admin\/editor\//)
-  const editorPreview = page.getByText('Preview (390px)').locator('..')
+  const editorPreview = page.getByRole('region', { name: 'Site preview' })
   await expect(editorPreview.locator('[data-theme="modern"]')).toBeVisible()
 
   // 10. Switch theme via visual picker

@@ -22,8 +22,18 @@
   --theme-shadow: 0 4px 24px -8px rgb(120 100 60 / 0.08);
 }
 
+/* Backdrop around the framed page on wide screens — a deeper, warmer cream. */
+[data-theme='modern'].site-shell {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--theme-primary) 18%, var(--theme-base-200)) 0%,
+    color-mix(in oklab, var(--theme-base-300) 50%, var(--theme-base-200)) 55%,
+    color-mix(in oklab, var(--theme-primary) 14%, var(--theme-base-200)) 100%
+  );
+}
+
 /* Page surface — warm cream paper, white cards float on it */
-.public-page[data-theme='modern'] {
+[data-theme='modern'] .public-page {
   background: var(--theme-base-200);
   color: var(--theme-base-content);
   font-family: var(--theme-font-body);

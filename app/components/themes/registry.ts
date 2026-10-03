@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import type { Block, HeroBlock, CardBlock, TrimmedBlock, CtaBlock } from '~/lib/doc'
+import type { Block, Doc, HeroBlock, CardBlock, TrimmedBlock, CtaBlock } from '~/lib/doc'
 
 export interface BlockProps<T extends Block = Block> {
   block: T
@@ -13,11 +13,22 @@ export interface ThemeBlocks {
   cta: ComponentType<BlockProps<CtaBlock>>
 }
 
+/**
+ * - `mobile`: a single ~480px column. On wide screens the page is framed as a
+ *   rounded, shadowed card on a backdrop (see `.site-shell` in global.css).
+ * - `responsive`: the theme fills the screen and adapts its own layout with
+ *   `@container site (…)` queries, so previews at any width render correctly.
+ */
+export type ThemeLayout = 'mobile' | 'responsive'
+
 export interface ThemeManifest {
   id: string
   label: string
   description: string
+  layout: ThemeLayout
   blocks: ThemeBlocks
+  /** Content shown when previewing the theme; defaults to the shared café sample. */
+  sample?: Doc
 }
 
 const registry = new Map<string, ThemeManifest>()

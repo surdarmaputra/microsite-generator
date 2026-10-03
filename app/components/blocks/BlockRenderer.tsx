@@ -34,5 +34,6 @@ export function BlockRenderer({ block, isPreview = false, theme = 'basic' }: {
     }
   })()
   if (!content) return null
-  return <div style={layoutStyles(block.layout)}>{content}</div>
+  // `data-block-slot` lets responsive themes place blocks in a page grid.
+  return <div data-block-slot={block.type} style={layoutStyles(block.layout)}>{content}</div>
 }

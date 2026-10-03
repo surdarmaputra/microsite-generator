@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { getLiveDocFn } from '~/server/fns/sites'
 import { resolveTheme, toPublicDoc } from '~/lib/doc'
 import { publicCacheHeaders } from '~/lib/cache'
-import { BlockRenderer } from '~/components/blocks/BlockRenderer'
+import { SitePage, SiteShell } from '~/components/blocks/SitePage'
 
 export const Route = createFileRoute('/$slug')({
   loader: async ({ params }) => {
@@ -49,7 +49,7 @@ export const Route = createFileRoute('/$slug')({
 function SlugPage() {
   const { doc } = Route.useLoaderData()
   const theme = resolveTheme(doc.theme)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -87,19 +87,13 @@ function SlugPage() {
     }
   }, [])
 
-  return (
-    <main className="public-page" data-theme={theme} ref={containerRef}>
-      {doc.blocks.map(block => (
-        <BlockRenderer key={block.id} block={block} theme={theme} />
-      ))}
-    </main>
-  )
+  return <SitePage doc={doc} theme={theme} as="main" pageRef={containerRef} />
 }
 
 function NotFoundPage() {
   return (
-    <main className="public-page flex items-center justify-center">
+    <SiteShell theme={resolveTheme(undefined)} as="main" className="items-center justify-center">
       <p className="text-gray-400 text-sm">Page not found</p>
-    </main>
+    </SiteShell>
   )
 }

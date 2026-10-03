@@ -3,7 +3,8 @@
 // registry. Import order is the order themes appear in the editor selector.
 import './basic'
 import './modern'
+import './creator'
 
 export { getTheme, listThemes } from './registry'
-export type { ThemeManifest } from './registry'
+export type { ThemeLayout, ThemeManifest } from './registry'
 export { THEME_PALETTE, THEME_TOKENS } from './tokens'

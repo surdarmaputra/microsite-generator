@@ -1,14 +1,21 @@
 /* Basic theme — the original microsite-generator look: clean, corporate, bright.
  *
- * Every rule is scoped under [data-theme="basic"], which the page wrapper sets
- * from `doc.theme`. Restyling this theme means editing only this file: the block
- * components carry semantic class names and no visual utilities.
+ * Every rule is scoped under [data-theme="basic"], which the site shell
+ * (SiteShell in components/blocks/SitePage.tsx) sets from `doc.theme`.
+ * Restyling this theme means editing only this file: the block components carry
+ * semantic class names and no visual utilities.
  *
  * NOTE FOR AI THEME AUTHORS: the root block below declares the unified token set
  * from `../tokens.ts` — every theme declares exactly those tokens, and rules style
  * through them only (no raw colours outside the root block). To clone a theme,
  * copy this directory, re-value the tokens, and register the new manifest. Keep
  * animation and @property names prefixed with the theme id.
+ *
+ * Layout: this is a `layout: 'mobile'` theme. On wide screens global.css frames
+ * the page as a rounded, shadowed card; the theme paints the backdrop behind it
+ * on `.site-shell`. A theme that adapts to desktop uses `layout: 'responsive'`
+ * and switches layouts with `@container site (…)`, never viewport media queries
+ * (see themes/creator).
  */
 
 [data-theme='basic'] {
@@ -31,7 +38,17 @@
 
 /* --- Page ---------------------------------------------------------------- */
 
-.public-page[data-theme='basic'] {
+/* Backdrop around the framed page on wide screens. */
+[data-theme='basic'].site-shell {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--theme-primary) 10%, var(--theme-base-200)) 0%,
+    var(--theme-base-200) 55%,
+    color-mix(in oklab, var(--theme-secondary) 5%, var(--theme-base-200)) 100%
+  );
+}
+
+[data-theme='basic'] .public-page {
   background: var(--theme-base-100);
   color: var(--theme-base-content);
   font-family: var(--theme-font-body);

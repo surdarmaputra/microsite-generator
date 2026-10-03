@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { getSiteFn } from '~/server/fns/sites'
-import { BlockRenderer } from '~/components/blocks/BlockRenderer'
+import { SitePage } from '~/components/blocks/SitePage'
 import type { Doc } from '~/lib/doc'
 import { emptyDoc, resolveTheme } from '~/lib/doc'
 
@@ -26,13 +26,7 @@ function PreviewPage() {
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
-  const theme = resolveTheme(doc.theme)
-
-  return (
-    <div className="public-page" data-theme={theme} style={{ maxWidth: 390, margin: '0 auto' }}>
-      {doc.blocks.map(block => (
-        <BlockRenderer key={block.id} block={block} theme={theme} isPreview />
-      ))}
-    </div>
-  )
+  // Full-page draft preview: renders exactly like the public page at the
+  // browser's real width (framed on desktop for mobile-layout themes).
+  return <SitePage doc={doc} theme={resolveTheme(doc.theme)} isPreview />
 }

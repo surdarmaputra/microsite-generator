@@ -1,7 +1,8 @@
 'use client'
 import { useState, type ReactNode } from 'react'
 import { Maximize2 } from 'lucide-react'
-import { ThemePreview } from './ThemePreview'
+import { SitePreview } from './SitePreview'
+import { sampleDoc } from './sampleDoc'
 import { ThemePreviewDialog } from './ThemePreviewDialog'
 import { ThemePalette } from './ThemePalette'
 import { resolveTheme } from '~/lib/doc'
@@ -57,14 +58,14 @@ export function ThemeCard({ theme, footer, size = 'md', selected, onSelect }: Th
               onClick={onSelect}
               className="absolute inset-0 w-full overflow-hidden"
             >
-              <ThemePreview theme={themeId} />
+              <SitePreview doc={theme.sample ?? sampleDoc} theme={themeId} thumbnail />
               {gradient}
             </button>
             {expandButton}
           </div>
         ) : (
           <div className={cn('relative', heightClass, 'overflow-hidden')}>
-            <ThemePreview theme={themeId} />
+            <SitePreview doc={theme.sample ?? sampleDoc} theme={themeId} thumbnail />
             {gradient}
             {expandButton}
           </div>

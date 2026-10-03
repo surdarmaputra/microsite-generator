@@ -1,0 +1,563 @@
+/* Creator Pop — neo-brutalist bento for creators and creative studios.
+ *
+ * Responsive theme (manifest `layout: 'responsive'`): one stacked column on
+ * phones, a 12-column bento grid once the `site` container (.site-shell) is
+ * wide enough. Layout switches on the container, never the viewport, so the
+ * admin's scaled desktop preview renders exactly like a real desktop screen.
+ *
+ * Trend: neo-brutalism — flat saturated colour, thick ink outlines, hard
+ * offset shadows, chunky display type, sticker-like tilts.
+ *
+ * The root block declares the unified token set from `../tokens.ts`; rules style
+ * through those tokens only. Ink = base-content (outlines, hard shadows); the
+ * extra sticker colours are oklch mixes of the brand tokens (lime + pink → sun
+ * yellow, violet + lime → sky blue). See the basic theme's header for the
+ * authoring rules.
+ */
+
+[data-theme='creator'] {
+  --theme-base-100: #fffdf7;
+  --theme-base-200: #fff6e5;
+  --theme-base-300: #e2d6bf;
+  --theme-base-content: #121212;
+  --theme-primary: #d4ff3a;
+  --theme-primary-content: #121212;
+  --theme-secondary: #ff5fa2;
+  --theme-accent: #8b6cff;
+  --theme-font-body: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --theme-font-heading: 'Bricolage Grotesque Variable', 'Inter Variable', ui-sans-serif, sans-serif;
+  --theme-radius-box: 1.25rem;
+  --theme-radius-field: 1rem;
+  --theme-border: 3px;
+  --theme-shadow: 5px 5px 0 #121212;
+}
+
+/* --- Page ----------------------------------------------------------------- */
+
+/* Dotted cream canvas behind every layout width. */
+[data-theme='creator'].site-shell {
+  background:
+    radial-gradient(var(--theme-base-300) 1.2px, transparent 1.4px) 0 0 / 22px 22px,
+    var(--theme-base-200);
+}
+
+[data-theme='creator'] .public-page {
+  gap: 1.25rem;
+  padding: 1.25rem 1rem 3rem;
+  color: var(--theme-base-content);
+  font-family: var(--theme-font-body);
+  font-weight: 500;
+}
+
+[data-theme='creator'] [data-block-type] :is(h2, h3) {
+  font-family: var(--theme-font-heading);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+[data-theme='creator'] [data-block-type] h3 {
+  font-size: clamp(1.5rem, 3.2cqi, 2.25rem);
+}
+
+[data-theme='creator'] [data-block-type] a:not([class]) {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+[data-theme='creator'] [data-block-type] > div > :is(img, iframe) {
+  display: block;
+  width: 100%;
+  border: var(--theme-border) solid var(--theme-base-content);
+  border-radius: calc(var(--theme-radius-box) - 0.375rem);
+}
+
+/* Starburst shape, drawn as a mask so its colours come from tokens. The
+ * outlined variant is the same path plus an 8-unit stroke (4 units outside). */
+[data-theme='creator'] .theme-hero-sticker::after,
+[data-theme='creator'] .theme-trimmed li::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cpath%20d='M50%204l9%2017%2018-8-1%2020%2019%206-13%2015%2013%2015-19%206%201%2020-18-8-9%2017-9-17-18%208%201-20-19-6%2013-15-13-15%2019-6-1-20%2018%208z'%20fill='black'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cpath%20d='M50%204l9%2017%2018-8-1%2020%2019%206-13%2015%2013%2015-19%206%201%2020-18-8-9%2017-9-17-18%208%201-20-19-6%2013-15-13-15%2019-6-1-20%2018%208z'%20fill='black'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+[data-theme='creator'] .theme-hero-sticker::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cpath%20d='M50%204l9%2017%2018-8-1%2020%2019%206-13%2015%2013%2015-19%206%201%2020-18-8-9%2017-9-17-18%208%201-20-19-6%2013-15-13-15%2019-6-1-20%2018%208z'%20fill='black'%20stroke='black'%20stroke-width='8'%20stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cpath%20d='M50%204l9%2017%2018-8-1%2020%2019%206-13%2015%2013%2015-19%206%201%2020-18-8-9%2017-9-17-18%208%201-20-19-6%2013-15-13-15%2019-6-1-20%2018%208z'%20fill='black'%20stroke='black'%20stroke-width='8'%20stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* --- Hero ----------------------------------------------------------------- */
+
+[data-theme='creator'] .theme-hero-split,
+[data-theme='creator'] .theme-hero-banner {
+  position: relative;
+  border: var(--theme-border) solid var(--theme-base-content);
+  border-radius: calc(var(--theme-radius-box) + 0.5rem);
+  box-shadow: var(--theme-shadow);
+}
+
+[data-theme='creator'] .theme-hero-split {
+  background: var(--theme-primary);
+  color: var(--theme-primary-content);
+  padding: 2rem 1.25rem 1.25rem;
+}
+
+[data-theme='creator'] .theme-hero-banner {
+  overflow: hidden;
+  background: var(--theme-accent);
+}
+
+[data-theme='creator'] .theme-hero-banner .theme-hero-content > img {
+  border: 0;
+  border-radius: 0;
+  max-height: 560px;
+  object-fit: cover;
+}
+
+[data-theme='creator'] .theme-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+[data-theme='creator'] .theme-hero-content p {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+[data-theme='creator'] .theme-hero-content h2 {
+  font-size: clamp(2.5rem, 6cqi, 4.75rem);
+  line-height: 0.95;
+  text-wrap: balance;
+}
+
+[data-theme='creator'] .theme-hero-content > img {
+  margin-top: 0.5rem;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--theme-accent);
+}
+
+/* Spinning starburst sticker: ink outline (::before) under a pink burst with a
+ * lime eye (::after); the hard drop shadow applies to both. */
+[data-theme='creator'] .theme-hero-sticker {
+  position: absolute;
+  top: -1.75rem;
+  right: 0.25rem;
+  width: 5.5rem;
+  height: 5.5rem;
+  filter: drop-shadow(3px 3px 0 var(--theme-base-content));
+  animation: creator-spin 14s linear infinite;
+  pointer-events: none;
+}
+
+[data-theme='creator'] .theme-hero-sticker::before,
+[data-theme='creator'] .theme-hero-sticker::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+[data-theme='creator'] .theme-hero-sticker::before {
+  background: var(--theme-base-content);
+}
+
+[data-theme='creator'] .theme-hero-sticker::after {
+  background: radial-gradient(
+    circle closest-side,
+    var(--theme-primary) 0 18%,
+    var(--theme-base-content) 18% 26%,
+    var(--theme-secondary) 26%
+  );
+}
+
+/* --- Card ----------------------------------------------------------------- */
+
+[data-theme='creator'] .theme-card {
+  height: 100%;
+  border: var(--theme-border) solid var(--theme-base-content);
+  border-radius: var(--theme-radius-box);
+  background: var(--theme-base-100);
+  box-shadow: var(--theme-shadow);
+  padding: 1.25rem;
+  transition:
+    translate 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    rotate 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme='creator'] .theme-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+[data-theme='creator'] .theme-card-content p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+[data-theme='creator'] .theme-card-content h3 {
+  font-size: clamp(1.75rem, 3.6cqi, 2.75rem);
+}
+
+[data-theme='creator'] .theme-card-content > img + h3 {
+  margin-top: 0.5rem;
+}
+
+/* Sticker palette: consecutive cards cycle colour and tilt. */
+[data-theme='creator'] .public-page > :nth-child(4n + 1 of [data-block-slot='card']) .theme-card {
+  background: color-mix(in oklch, var(--theme-primary) 60%, var(--theme-secondary));
+  rotate: -1.25deg;
+}
+
+[data-theme='creator'] .public-page > :nth-child(4n + 2 of [data-block-slot='card']) .theme-card {
+  background: var(--theme-secondary);
+  rotate: 1deg;
+}
+
+[data-theme='creator'] .public-page > :nth-child(4n + 3 of [data-block-slot='card']) .theme-card {
+  background: color-mix(in oklch, var(--theme-accent) 55%, var(--theme-primary));
+  rotate: -0.75deg;
+}
+
+/* Tilted stickers straighten and lift on hover (same specificity as the
+ * palette rules above, so it must come after them). */
+[data-theme='creator'] .public-page > [data-block-slot] .theme-card:hover {
+  translate: -3px -3px;
+  rotate: 0deg;
+  box-shadow: 8px 8px 0 var(--theme-base-content);
+}
+
+/* --- Trimmed -------------------------------------------------------------- */
+
+[data-theme='creator'] .theme-trimmed {
+  height: 100%;
+  border: var(--theme-border) solid var(--theme-base-content);
+  border-radius: var(--theme-radius-box);
+  background: var(--theme-base-100);
+  box-shadow: var(--theme-shadow);
+  padding: 1.5rem 1.25rem;
+}
+
+[data-theme='creator'] .theme-trimmed-body {
+  position: relative;
+}
+
+[data-theme='creator'] .theme-trimmed h3 {
+  margin-bottom: 0.75rem;
+}
+
+[data-theme='creator'] .theme-trimmed p {
+  line-height: 1.55;
+}
+
+[data-theme='creator'] .theme-trimmed ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+[data-theme='creator'] .theme-trimmed li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin: 0.375rem 0;
+}
+
+[data-theme='creator'] .theme-trimmed li::before {
+  content: '';
+  position: absolute;
+  top: 0.3em;
+  left: 0;
+  width: 1.1em;
+  height: 1.1em;
+  background: var(--theme-secondary);
+}
+
+[data-theme='creator'] .theme-trimmed-fade {
+  position: absolute;
+  right: 0;
+  /* 1px past the clip edge: on fractional offsets the clipped line would
+   * otherwise bleed through the antialiased last row. */
+  bottom: -1px;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4rem 0 0.25rem;
+  background: linear-gradient(to bottom, transparent, var(--theme-base-100) 65%);
+}
+
+[data-theme='creator'] .theme-trimmed-toggle {
+  cursor: pointer;
+  border: var(--theme-border) solid var(--theme-base-content);
+  border-radius: var(--theme-radius-field);
+  background: var(--theme-base-content);
+  color: var(--theme-primary);
+  box-shadow: 3px 3px 0 var(--theme-secondary);
+  padding: 0.5rem 1.25rem;
+  font-family: var(--theme-font-heading);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.4;
+  transition: translate 150ms ease, box-shadow 150ms ease;
+}
+
+[data-theme='creator'] .theme-trimmed-toggle:hover {
+  translate: -2px -2px;
+  box-shadow: 5px 5px 0 var(--theme-secondary);
+}
+
+[data-theme='creator'] .theme-trimmed-toggle--less {
+  display: block;
+  margin: 1rem auto 0;
+}
+
+/* --- CTA ------------------------------------------------------------------ */
+
+[data-theme='creator'] .theme-cta {
+  height: 100%;
+}
+
+[data-theme='creator'] .theme-cta-outline-wrap {
+  display: block;
+  height: 100%;
+}
+
+[data-theme='creator'] .theme-cta-solid {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  overflow: hidden;
+  border: var(--theme-border) solid var(--theme-base-content);
+  border-radius: var(--theme-radius-field);
+  background: var(--theme-primary);
+  box-shadow: var(--theme-shadow);
+  padding: 1rem 1.25rem;
+  font-family: var(--theme-font-heading);
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--theme-primary-content);
+  text-decoration: none;
+  transition:
+    translate 150ms ease,
+    box-shadow 150ms ease;
+}
+
+[data-theme='creator'] .theme-cta-solid:hover {
+  translate: 2px 2px;
+  box-shadow: 3px 3px 0 var(--theme-base-content);
+}
+
+[data-theme='creator'] .theme-cta-solid:active {
+  translate: 5px 5px;
+  box-shadow: 0 0 0 var(--theme-base-content);
+}
+
+[data-theme='creator'] .theme-cta-solid:focus-visible {
+  outline: 3px solid var(--theme-accent);
+  outline-offset: 4px;
+}
+
+/* Outline variant — paper button, ink outline. */
+[data-theme='creator'] .theme-cta-outline-wrap .theme-cta-solid {
+  background: var(--theme-base-100);
+  color: var(--theme-base-content);
+}
+
+/* Glass variant — accent button with a sliding highlight. */
+[data-theme='creator'] .theme-cta-glass {
+  background: var(--theme-accent);
+  color: var(--theme-base-100);
+}
+
+[data-theme='creator'] .theme-cta-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in oklab, var(--theme-base-100) 35%, transparent) 50%,
+    transparent 70%
+  );
+  animation: creator-shimmer 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+[data-theme='creator'] .theme-cta-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* Arrow — ink disc holding a mask-drawn arrow; turns to point right on hover. */
+[data-theme='creator'] .theme-cta-arrow {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: var(--theme-base-content);
+  rotate: -45deg;
+  transition: rotate 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme='creator'] .theme-cta-arrow::after {
+  content: '';
+  margin: auto;
+  width: 1.125rem;
+  height: 1.125rem;
+  background: var(--theme-primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2012h14M12%205l7%207-7%207'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2012h14M12%205l7%207-7%207'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+[data-theme='creator'] .theme-cta-solid:hover .theme-cta-arrow {
+  rotate: 0deg;
+}
+
+/* --- Desktop: bento grid --------------------------------------------------- */
+
+@container site (min-width: 760px) {
+  [data-theme='creator'] .public-page {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-content: start;
+    gap: 1.75rem;
+    width: 100%;
+    max-width: 1200px;
+    padding: 3rem 2.5rem 4.5rem;
+  }
+
+  [data-theme='creator'] .public-page > [data-block-slot] {
+    grid-column: span 12;
+  }
+
+  /* Cards tile three per row; media cards and long copy take half a row. */
+  [data-theme='creator'] .public-page > [data-block-slot='card'] {
+    grid-column: span 4;
+  }
+
+  [data-theme='creator'] .public-page > [data-block-slot='card']:has(img, iframe),
+  [data-theme='creator'] .public-page > [data-block-slot='trimmed'] {
+    grid-column: span 6;
+  }
+
+  /* CTAs: a run starts on a new row; one fills it, two halve it, more tile by three. */
+  [data-theme='creator'] .public-page > [data-block-slot='cta'] {
+    grid-column: span 4;
+  }
+
+  [data-theme='creator'] .public-page > :not([data-block-slot='cta']) + [data-block-slot='cta'] {
+    grid-column: 1 / span 4;
+  }
+
+  [data-theme='creator']
+    .public-page
+    > :nth-child(1 of [data-block-slot='cta']):nth-last-child(1 of [data-block-slot='cta']) {
+    grid-column: 1 / -1;
+  }
+
+  [data-theme='creator']
+    .public-page
+    > :nth-child(1 of [data-block-slot='cta']):nth-last-child(2 of [data-block-slot='cta']) {
+    grid-column: 1 / span 6;
+  }
+
+  [data-theme='creator']
+    .public-page
+    > :nth-child(2 of [data-block-slot='cta']):nth-last-child(1 of [data-block-slot='cta']) {
+    grid-column: span 6;
+  }
+
+  [data-theme='creator'] .theme-cta-solid {
+    min-height: 5.5rem;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  /* Hero: copy left, media right. */
+  [data-theme='creator'] .theme-hero-split {
+    padding: 3.5rem 3rem;
+  }
+
+  /* Rich text arrives as flat siblings, so the copy stacks in column 1 and the
+   * media spans every row of column 2. The trailing 1fr row absorbs the media's
+   * extra height (items spanning a flexible track don't inflate auto rows), and
+   * row-gap stays 0 because gaps between empty tracks don't collapse. */
+  [data-theme='creator'] .theme-hero-content:has(> img, > iframe) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    grid-template-rows: repeat(8, auto) 1fr;
+    gap: 0 3.5rem;
+  }
+
+  [data-theme='creator'] .theme-hero-content > * {
+    grid-column: 1;
+  }
+
+  [data-theme='creator'] .theme-hero-content > :not(img, iframe) ~ :not(img, iframe) {
+    margin-top: 1.5rem;
+  }
+
+  [data-theme='creator'] .theme-hero-content > :is(img, iframe) {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+    margin-top: 0;
+    rotate: 2deg;
+  }
+
+  [data-theme='creator'] .theme-hero-content p {
+    font-size: 1.25rem;
+  }
+
+  [data-theme='creator'] .theme-hero-sticker {
+    top: -2.5rem;
+    right: 2.5rem;
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+
+  [data-theme='creator'] .theme-card {
+    padding: 1.5rem;
+  }
+
+  [data-theme='creator'] .theme-trimmed {
+    padding: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='creator'] .theme-hero-sticker,
+  [data-theme='creator'] .theme-cta-glass::after {
+    animation: none;
+  }
+}
+
+/* --- Animations (owned by this theme) -------------------------------------- */
+
+@keyframes creator-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes creator-shimmer {
+  from {
+    transform: translateX(-200%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
