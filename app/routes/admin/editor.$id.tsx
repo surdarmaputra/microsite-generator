@@ -25,8 +25,34 @@ import type { Doc, Block, Meta } from '~/lib/doc'
 export const Route = createFileRoute('/admin/editor/$id')({
   loader: ({ params }) => getSiteFn({ data: { id: params.id } }),
   headers: () => ({ 'Cache-Control': 'private, no-store' }),
+  staleTime: 0,
+  gcTime: 0,
+  pendingComponent: EditorPending,
   component: EditorPage,
 })
+
+function EditorPending() {
+  return (
+    <div className="flex h-[calc(100dvh-3.5rem)] flex-col bg-surface-page">
+      <div className="border-hairline flex h-14 items-center justify-between border-b px-4">
+        <div className="bg-surface-hover rounded-control animate-pulse h-5 w-48" />
+        <div className="flex items-center gap-2">
+          <div className="bg-surface-hover rounded-control animate-pulse h-8 w-20" />
+          <div className="bg-surface-hover rounded-control animate-pulse h-8 w-20" />
+        </div>
+      </div>
+      <div className="flex flex-1 overflow-hidden">
+        <div className="border-hairline flex flex-col gap-3 border-r p-4 w-80">
+          <div className="bg-surface-hover rounded-control animate-pulse h-9 w-full" />
+          <div className="bg-surface-hover rounded-control animate-pulse h-24 w-full" />
+          <div className="bg-surface-hover rounded-control animate-pulse h-9 w-full" />
+          <div className="bg-surface-hover rounded-control animate-pulse h-9 w-full" />
+        </div>
+        <div className="flex-1 bg-surface-hover animate-pulse" />
+      </div>
+    </div>
+  )
+}
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 

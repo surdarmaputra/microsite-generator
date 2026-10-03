@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { Plus, Pencil, Copy, Globe, Trash2, EyeOff, ExternalLink, MoreHorizontal } from 'lucide-react'
 import { StatusBadge } from './StatusBadge'
 import { Button } from '~/components/ui/Button'
@@ -46,8 +46,8 @@ interface Props {
 }
 
 export function SitesList({ sites, onRefresh }: Props) {
-  const navigate = useNavigate()
   const { open } = useNewSiteDialog()
+
 
   const [dupOpen, setDupOpen] = useState(false)
   const [dupId, setDupId] = useState<string | null>(null)
@@ -175,13 +175,14 @@ export function SitesList({ sites, onRefresh }: Props) {
                     <td className="px-4 py-3">
                       {/* Desktop: icon buttons */}
                       <div className="hidden md:flex items-center justify-end gap-1">
-                        <button
+                        <Link
+                          to="/admin/editor/$id"
+                          params={{ id: site.id }}
                           title="Edit"
-                          onClick={() => navigate({ to: '/admin/editor/$id', params: { id: site.id } })}
                           className="cursor-pointer rounded-control text-ink-secondary hover:bg-surface-hover hover:text-ink-primary grid size-8 place-items-center transition-colors"
                         >
                           <Pencil size={14} />
-                        </button>
+                        </Link>
                         {site.isPublished && (
                           <a
                             title="View site"
@@ -226,8 +227,10 @@ export function SitesList({ sites, onRefresh }: Props) {
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onSelect={() => navigate({ to: '/admin/editor/$id', params: { id: site.id } })}>
-                              <Pencil size={13} /> Edit
+                            <DropdownMenuItem asChild>
+                              <Link to="/admin/editor/$id" params={{ id: site.id }} className="flex items-center gap-2">
+                                <Pencil size={13} /> Edit
+                              </Link>
                             </DropdownMenuItem>
                             {site.isPublished && (
                               <DropdownMenuItem asChild>

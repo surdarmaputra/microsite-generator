@@ -1,5 +1,5 @@
 import { ChevronDown, LogOut, Menu } from 'lucide-react'
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 interface TopbarProps {
@@ -48,8 +48,9 @@ function Breadcrumb({ pathname }: { pathname: string }) {
 }
 
 export function Topbar({ username, onMobileMenuOpen, onLogout }: TopbarProps) {
-  const location = useLocation()
-  const pathname = location.pathname
+  const pathname = useRouterState({
+    select: (s) => (s.resolvedLocation ?? s.location).pathname,
+  })
   const initials = username.slice(0, 2).toUpperCase()
 
   return (
