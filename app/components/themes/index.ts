@@ -6,3 +6,4 @@ import './modern'
 
 export { getTheme, listThemes } from './registry'
 export type { ThemeManifest } from './registry'
+export { THEME_PALETTE, THEME_TOKENS } from './tokens'
