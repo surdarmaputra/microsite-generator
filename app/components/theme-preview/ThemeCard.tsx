@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react'
 import { Maximize2 } from 'lucide-react'
 import { ThemePreview } from './ThemePreview'
 import { ThemePreviewDialog } from './ThemePreviewDialog'
+import { ThemePalette } from './ThemePalette'
 import { resolveTheme } from '~/lib/doc'
 import type { ThemeManifest } from '~/components/themes'
 import { Badge } from '~/components/ui/Badge'
@@ -79,6 +80,12 @@ export function ThemeCard({ theme, footer, size = 'md', selected, onSelect }: Th
           {size !== 'sm' && (
             <p className="text-caption text-ink-secondary mt-1">{theme.description}</p>
           )}
+          <ThemePalette
+            theme={themeId}
+            label={theme.label}
+            size={size}
+            className={size === 'sm' ? 'mt-2' : 'mt-3'}
+          />
           {footer && <div className="mt-auto pt-4">{footer}</div>}
         </div>
       </article>

@@ -1,23 +1,44 @@
-/* Basic theme — the original microsite-generator look.
+/* Basic theme — the original microsite-generator look: clean, corporate, bright.
  *
  * Every rule is scoped under [data-theme="basic"], which the page wrapper sets
  * from `doc.theme`. Restyling this theme means editing only this file: the block
  * components carry semantic class names and no visual utilities.
  *
- * NOTE FOR AI THEME AUTHORS: copy this directory, rename the classes/values, and
- * register the new manifest. Keep the animation names unique per theme.
+ * NOTE FOR AI THEME AUTHORS: the root block below declares the unified token set
+ * from `../tokens.ts` — every theme declares exactly those tokens, and rules style
+ * through them only (no raw colours outside the root block). To clone a theme,
+ * copy this directory, re-value the tokens, and register the new manifest. Keep
+ * animation and @property names prefixed with the theme id.
  */
 
 [data-theme='basic'] {
-  --theme-page-bg: #ffffff;
-  --theme-ink: #091135;
-  --theme-accent: #0f77ff;
-  --theme-accent-hover: #1070c9;
-  --theme-surface-hover: #eceef2;
-  --theme-border: #eef1f6;
-  --theme-card-shadow: 0 2px 8px -2px rgba(9, 17, 53, 0.04), 0 12px 32px -8px rgba(9, 17, 53, 0.08);
-  --theme-hero-split-bg: linear-gradient(in oklab, #f0f4ff 0%, #ffffff 100%);
-  --theme-content-fade: linear-gradient(to bottom, transparent, #ffffff);
+  --theme-base-100: #ffffff;
+  --theme-base-200: #eef1f6;
+  --theme-base-300: #e1e9f0;
+  --theme-base-content: #091135;
+  --theme-primary: #0f77ff;
+  --theme-primary-content: #ffffff;
+  --theme-secondary: #7c3aed;
+  --theme-accent: #ec4899;
+  --theme-font-body: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --theme-font-heading: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --theme-radius-box: 1rem;
+  /* same serialization as Tailwind v4 `rounded-full`, so the pill cap antialiases identically */
+  --theme-radius-field: calc(infinity * 1px);
+  --theme-border: 1px;
+  --theme-shadow: 0 2px 8px -2px rgb(9 17 53 / 0.04), 0 12px 32px -8px rgb(9 17 53 / 0.08);
+}
+
+/* --- Page ---------------------------------------------------------------- */
+
+.public-page[data-theme='basic'] {
+  background: var(--theme-base-100);
+  color: var(--theme-base-content);
+  font-family: var(--theme-font-body);
+}
+
+[data-theme='basic'] [data-block-type] :is(h1, h2, h3, h4) {
+  font-family: var(--theme-font-heading);
 }
 
 /* --- Hero ---------------------------------------------------------------- */
@@ -30,7 +51,11 @@
 }
 
 [data-theme='basic'] .theme-hero-split {
-  background: var(--theme-hero-split-bg);
+  background: linear-gradient(
+    in oklab,
+    color-mix(in oklab, var(--theme-primary) 6%, var(--theme-base-100)) 0%,
+    var(--theme-base-100) 100%
+  );
 }
 
 [data-theme='basic'] .theme-hero-content {
@@ -41,10 +66,10 @@
 
 [data-theme='basic'] .theme-card {
   margin: 0 1rem;
-  border: 1px solid var(--theme-border);
-  border-radius: 1rem;
-  background: #ffffff;
-  box-shadow: var(--theme-card-shadow);
+  border: var(--theme-border) solid var(--theme-base-300);
+  border-radius: var(--theme-radius-box);
+  background: var(--theme-base-100);
+  box-shadow: var(--theme-shadow);
   padding: 1.25rem 1rem;
 }
 
@@ -64,26 +89,25 @@
   align-items: flex-end;
   justify-content: center;
   padding: 3rem 0 1rem;
-  background: var(--theme-content-fade);
+  background: linear-gradient(to bottom, transparent, var(--theme-base-100));
 }
 
 [data-theme='basic'] .theme-trimmed-toggle {
   cursor: pointer;
-  border: 1px solid var(--theme-border);
-  /* same serialization as Tailwind v4 `rounded-full`, so the pill cap antialiases identically */
-  border-radius: calc(infinity * 1px);
-  background: #ffffff;
-  box-shadow: var(--theme-card-shadow);
+  border: var(--theme-border) solid var(--theme-base-300);
+  border-radius: var(--theme-radius-field);
+  background: var(--theme-base-100);
+  box-shadow: var(--theme-shadow);
   padding: 0.5rem 1.25rem;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.5;
-  color: var(--theme-ink);
+  color: var(--theme-base-content);
   transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme='basic'] .theme-trimmed-toggle:hover {
-  background: var(--theme-surface-hover);
+  background: var(--theme-base-200);
 }
 
 /* "Show less" sits in flow, without the raised surface of the fade button. */
@@ -106,19 +130,18 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  /* same serialization as Tailwind v4 `rounded-full`, so the pill cap antialiases identically */
-  border-radius: calc(infinity * 1px);
-  background: var(--theme-accent);
+  border-radius: var(--theme-radius-field);
+  background: var(--theme-primary);
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--theme-primary-content);
   text-decoration: none;
   transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme='basic'] .theme-cta-solid:hover {
-  background: var(--theme-accent-hover);
+  background: color-mix(in oklab, var(--theme-primary) 85%, var(--theme-base-content));
 }
 
 [data-theme='basic'] .theme-cta-solid:active {
@@ -127,16 +150,22 @@
 
 [data-theme='basic'] .theme-cta-solid:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--theme-accent);
+  box-shadow: 0 0 0 2px var(--theme-base-100), 0 0 0 4px var(--theme-primary);
 }
 
 /* Outline variant — spinning conic-gradient border around the solid button. */
 [data-theme='basic'] .theme-cta-outline-wrap {
   display: block;
   padding: 2px;
-  border-radius: 9999px;
-  background: conic-gradient(from var(--cta-angle), #0f77ff, #7c3aed, #06b6d4, #ec4899, #0f77ff);
-  animation: cta-border-spin 3s linear infinite;
+  border-radius: var(--theme-radius-field);
+  background: conic-gradient(
+    from var(--basic-cta-angle),
+    var(--theme-primary),
+    var(--theme-secondary),
+    var(--theme-accent),
+    var(--theme-primary)
+  );
+  animation: basic-cta-border-spin 3s linear infinite;
 }
 
 /* Glass variant — solid button with a sliding shimmer highlight. */
@@ -149,8 +178,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
-  animation: cta-shimmer-slide 2.2s ease-in-out infinite;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in oklab, var(--theme-base-100) 28%, transparent) 50%,
+    transparent 70%
+  );
+  animation: basic-cta-shimmer-slide 2.2s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -167,8 +201,8 @@
   width: 16px;
   height: 16px;
   background-color: currentColor;
-  -webkit-mask: var(--theme-cta-arrow-mask) no-repeat center / contain;
-  mask: var(--theme-cta-arrow-mask) no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='white'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2012h14M12%205l7%207-7%207'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='white'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2012h14M12%205l7%207-7%207'/%3E%3C/svg%3E") no-repeat center / contain;
   transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -176,25 +210,21 @@
   transform: translateX(0.25rem);
 }
 
-[data-theme='basic'] {
-  --theme-cta-arrow-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='white'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2012h14M12%205l7%207-7%207'/%3E%3C/svg%3E");
-}
+/* --- CTA animations (owned by this theme) --------------------------------- */
 
-/* --- CTA animations (owned by this theme, moved out of global.css) -------- */
-
-@property --cta-angle {
+@property --basic-cta-angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }
 
-@keyframes cta-border-spin {
+@keyframes basic-cta-border-spin {
   to {
-    --cta-angle: 360deg;
+    --basic-cta-angle: 360deg;
   }
 }
 
-@keyframes cta-shimmer-slide {
+@keyframes basic-cta-shimmer-slide {
   from {
     transform: translateX(-200%);
   }

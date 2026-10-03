@@ -1,67 +1,84 @@
-/* Modern Classy theme — warm, editorial, boutique. All styling scoped to [data-theme="modern"]. */
+/* Modern Classy theme — warm, editorial, boutique: muted gold on cream paper.
+ *
+ * All styling is scoped to [data-theme="modern"]. The root block declares the
+ * unified token set from `../tokens.ts`; rules style through those tokens only.
+ * See the basic theme's header for the authoring rules.
+ */
 
-[data-theme="modern"] {
-  --theme-page-bg: #faf7f2;
-  --theme-ink: #1a1a1a;
-  --theme-ink-secondary: #5c5450;
-  --theme-accent: #b8956a;
-  --theme-accent-hover: #a68254;
-  --theme-border: #e8e2d8;
-  --theme-card-shadow: 0 4px 24px -8px rgba(120, 100, 60, 0.08);
+[data-theme='modern'] {
+  --theme-base-100: #ffffff;
+  --theme-base-200: #faf7f2;
+  --theme-base-300: #e8e2d8;
+  --theme-base-content: #1a1a1a;
+  --theme-primary: #b8956a;
+  --theme-primary-content: #1a1a1a;
+  --theme-secondary: #8b6f47;
+  --theme-accent: #d4af7a;
+  --theme-font-body: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --theme-font-heading: 'Bricolage Grotesque Variable', 'Inter Variable', ui-sans-serif, sans-serif;
+  --theme-radius-box: 1.5rem;
+  --theme-radius-field: 9999px;
+  --theme-border: 1px;
+  --theme-shadow: 0 4px 24px -8px rgb(120 100 60 / 0.08);
 }
 
-/* Page surface — warm cream paper */
-.public-page[data-theme="modern"] {
-  background: var(--theme-page-bg);
-  color: var(--theme-ink);
+/* Page surface — warm cream paper, white cards float on it */
+.public-page[data-theme='modern'] {
+  background: var(--theme-base-200);
+  color: var(--theme-base-content);
+  font-family: var(--theme-font-body);
 }
 
 /* Editorial headings — display face, tighter tracking */
-[data-theme="modern"] [data-block-type] h1,
-[data-theme="modern"] [data-block-type] h2,
-[data-theme="modern"] [data-block-type] h3,
-[data-theme="modern"] [data-block-type] h4 {
-  font-family: var(--font-display);
-  letter-spacing: var(--tracking-display);
-  color: var(--theme-ink);
+[data-theme='modern'] [data-block-type] :is(h1, h2, h3, h4) {
+  font-family: var(--theme-font-heading);
+  letter-spacing: -0.022em;
 }
 
 /* Hero */
-[data-theme="modern"] .theme-hero-split {
+[data-theme='modern'] .theme-hero-split {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(to bottom, #f5f0e8, #faf7f2);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--theme-primary) 8%, var(--theme-base-200)),
+    var(--theme-base-200)
+  );
 }
 
-[data-theme="modern"] .theme-hero-banner {
+[data-theme='modern'] .theme-hero-banner {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(to bottom, rgba(184, 149, 106, 0.1), rgba(250, 247, 242, 0));
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--theme-primary) 10%, transparent),
+    transparent
+  );
 }
 
-[data-theme="modern"] .theme-hero-content {
+[data-theme='modern'] .theme-hero-content {
   width: 100%;
 }
 
 /* Card — borderless, soft warm shadow, larger radius */
-[data-theme="modern"] .theme-card {
+[data-theme='modern'] .theme-card {
   margin: 0 1rem;
   border: none;
-  border-radius: 1.5rem;
-  background: #ffffff;
-  box-shadow: var(--theme-card-shadow);
+  border-radius: var(--theme-radius-box);
+  background: var(--theme-base-100);
+  box-shadow: var(--theme-shadow);
   padding: 1.25rem 1rem;
 }
 
 /* Trimmed */
-[data-theme="modern"] .theme-trimmed {
+[data-theme='modern'] .theme-trimmed {
   position: relative;
   padding: 0 1rem;
 }
 
-[data-theme="modern"] .theme-trimmed-fade {
+[data-theme='modern'] .theme-trimmed-fade {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -70,15 +87,15 @@
   align-items: flex-end;
   justify-content: center;
   padding: 3rem 0 1rem;
-  background: linear-gradient(to bottom, transparent, #faf7f2);
+  background: linear-gradient(to bottom, transparent, var(--theme-base-200));
 }
 
-[data-theme="modern"] .theme-trimmed-toggle {
+[data-theme='modern'] .theme-trimmed-toggle {
   cursor: pointer;
-  border: 1px solid var(--theme-border);
-  background: #ffffff;
-  color: var(--theme-ink);
-  border-radius: 9999px;
+  border: var(--theme-border) solid var(--theme-base-300);
+  background: var(--theme-base-100);
+  color: var(--theme-base-content);
+  border-radius: var(--theme-radius-field);
   padding: 0.5rem 1.25rem;
   font-size: 13px;
   font-weight: 600;
@@ -86,29 +103,29 @@
   transition: background-color 0.15s ease;
 }
 
-[data-theme="modern"] .theme-trimmed-toggle:hover {
-  background: #f5f0e8;
+[data-theme='modern'] .theme-trimmed-toggle:hover {
+  background: color-mix(in oklab, var(--theme-base-300) 50%, var(--theme-base-100));
 }
 
-[data-theme="modern"] .theme-trimmed-toggle--less {
+[data-theme='modern'] .theme-trimmed-toggle--less {
   display: block;
   margin: 0.75rem auto 0;
 }
 
 /* CTA */
-[data-theme="modern"] .theme-cta {
+[data-theme='modern'] .theme-cta {
   padding: 0 1rem;
 }
 
-[data-theme="modern"] .theme-cta-solid {
+[data-theme='modern'] .theme-cta-solid {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--theme-accent);
-  color: var(--theme-ink);
-  border-radius: 9999px;
+  background: var(--theme-primary);
+  color: var(--theme-primary-content);
+  border-radius: var(--theme-radius-field);
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
@@ -116,26 +133,26 @@
   transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
-[data-theme="modern"] .theme-cta-solid:hover {
-  background: var(--theme-accent-hover);
+[data-theme='modern'] .theme-cta-solid:hover {
+  background: color-mix(in oklab, var(--theme-primary) 88%, var(--theme-base-content));
 }
 
-[data-theme="modern"] .theme-cta-solid:active {
+[data-theme='modern'] .theme-cta-solid:active {
   transform: scale(0.97);
 }
 
-[data-theme="modern"] .theme-cta-solid:focus-visible {
+[data-theme='modern'] .theme-cta-solid:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--theme-page-bg), 0 0 0 4px var(--theme-accent);
+  box-shadow: 0 0 0 2px var(--theme-base-200), 0 0 0 4px var(--theme-primary);
 }
 
-[data-theme="modern"] .theme-cta-label {
+[data-theme='modern'] .theme-cta-label {
   position: relative;
   z-index: 10;
 }
 
 /* Arrow — same stroke arrow as the base theme, drawn via mask so it inherits text colour */
-[data-theme="modern"] .theme-cta-arrow {
+[data-theme='modern'] .theme-cta-arrow {
   position: relative;
   z-index: 10;
   display: inline-block;
@@ -147,30 +164,42 @@
   transition: transform 0.15s ease;
 }
 
-[data-theme="modern"] .theme-cta-solid:hover .theme-cta-arrow {
+[data-theme='modern'] .theme-cta-solid:hover .theme-cta-arrow {
   transform: translateX(4px);
 }
 
 /* Outline variant — spinning gold gradient border */
-[data-theme="modern"] .theme-cta-outline-wrap {
+[data-theme='modern'] .theme-cta-outline-wrap {
   display: block;
   padding: 2px;
-  border-radius: 9999px;
-  background: conic-gradient(from var(--modern-cta-angle), #b8956a, #d4af7a, #8b6f47, #c9a574, #b8956a);
+  border-radius: var(--theme-radius-field);
+  background: conic-gradient(
+    from var(--modern-cta-angle),
+    var(--theme-primary),
+    var(--theme-accent),
+    var(--theme-secondary),
+    var(--theme-accent),
+    var(--theme-primary)
+  );
   animation: modern-cta-border-spin 3s linear infinite;
 }
 
-/* Glass variant — gold shimmer highlight */
-[data-theme="modern"] .theme-cta-glass {
+/* Glass variant — shimmer highlight */
+[data-theme='modern'] .theme-cta-glass {
   position: relative;
   overflow: hidden;
 }
 
-[data-theme="modern"] .theme-cta-glass::after {
+[data-theme='modern'] .theme-cta-glass::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in oklab, var(--theme-base-100) 28%, transparent) 50%,
+    transparent 70%
+  );
   animation: modern-cta-shimmer-slide 2.2s ease-in-out infinite;
   pointer-events: none;
 }
