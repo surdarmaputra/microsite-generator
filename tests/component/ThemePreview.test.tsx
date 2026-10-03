@@ -12,6 +12,7 @@ beforeAll(() => {
 
 import { ThemePreview } from '~/components/theme-preview/ThemePreview'
 import { sampleDoc } from '~/components/theme-preview/sampleDoc'
+import type { HeroBlock } from '~/lib/doc'
 
 describe('ThemePreview', () => {
   it('renders one [data-block-type] per sampleDoc block inside [data-theme="modern"]', () => {
@@ -33,5 +34,11 @@ describe('ThemePreview', () => {
     const cardBlock = sampleDoc.blocks[1]!
     expect(cardBlock.layout.mt).toBe('-lg')
     expect(cardBlock.layout.z).toBe(1)
+  })
+
+  it('hero block html contains <img and no <h2', () => {
+    const heroBlock = sampleDoc.blocks[0] as HeroBlock
+    expect(heroBlock.html).toContain('<img')
+    expect(heroBlock.html).not.toContain('<h2')
   })
 })
