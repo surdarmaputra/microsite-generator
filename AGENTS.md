@@ -53,10 +53,11 @@ app/
     fns/        # createServerFn handlers (sites, auth, upload)
   routes/       # TanStack Start file-based routes
   components/
-    blocks/     # BlockRenderer — dispatches each block to the active theme
-    theme-preview/  # ThemePreview, ThemeCard, ThemePreviewDialog, sampleDoc
+    blocks/     # BlockRenderer (one block → active theme) + SitePage/SiteShell (page chrome for every render surface)
+    theme-preview/  # SitePreview (the one preview: mobile/desktop switcher, scaled), DeviceFrame, ThemeCard, ThemePalette, ThemePreviewDialog, sampleDoc
     themes/     # one dir per theme (block components + scoped theme.css); register in themes/index.ts
                 # every theme.css declares exactly the unified tokens in themes/tokens.ts and styles only through them
+                # manifest `layout`: 'mobile' (framed on desktop) or 'responsive' (adapts via `@container site`, never viewport media queries)
     editor/     # admin Lexical editor + nodes
     admin/      # admin-specific components
     layout/       # AdminShell, Sidebar, Topbar, nav.ts — admin shell

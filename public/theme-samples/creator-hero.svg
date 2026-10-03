@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" fill="none" stroke="#121212" stroke-width="10" stroke-linejoin="round" stroke-linecap="round">
+  <rect width="800" height="800" fill="#8b6cff" stroke="none"/>
+  <!-- dotted texture -->
+  <g fill="#121212" stroke="none" opacity="0.18">
+    <circle cx="60" cy="60" r="6"/><circle cx="140" cy="60" r="6"/><circle cx="220" cy="60" r="6"/><circle cx="60" cy="140" r="6"/><circle cx="140" cy="140" r="6"/><circle cx="60" cy="220" r="6"/>
+    <circle cx="740" cy="740" r="6"/><circle cx="660" cy="740" r="6"/><circle cx="580" cy="740" r="6"/><circle cx="740" cy="660" r="6"/><circle cx="660" cy="660" r="6"/><circle cx="740" cy="580" r="6"/>
+  </g>
+  <!-- sun -->
+  <circle cx="560" cy="250" r="150" fill="#ffd23f"/>
+  <!-- phone / camera card -->
+  <g transform="rotate(-8 360 470)">
+    <rect x="170" y="250" width="380" height="440" rx="48" fill="#121212" stroke="none" transform="translate(18 18)"/>
+    <rect x="170" y="250" width="380" height="440" rx="48" fill="#fff6e5"/>
+    <rect x="210" y="300" width="300" height="250" rx="28" fill="#ff5fa2"/>
+    <path d="M325 370 L325 480 L420 425 Z" fill="#fff6e5"/>
+    <rect x="210" y="580" width="180" height="26" rx="13" fill="#121212" stroke="none"/>
+    <rect x="210" y="625" width="120" height="26" rx="13" fill="#121212" stroke="none" opacity="0.35"/>
+    <circle cx="470" cy="615" r="34" fill="#d4ff3a"/>
+  </g>
+  <!-- heart badge -->
+  <g transform="rotate(12 640 560)">
+    <rect x="560" y="500" width="170" height="120" rx="60" fill="#d4ff3a"/>
+    <path d="M610 548c0-18 26-26 35-6 9-20 35-12 35 6 0 22-35 40-35 40s-35-18-35-40z" fill="#ff5fa2" stroke-width="8"/>
+  </g>
+  <!-- sparkles -->
+  <path d="M150 380 l18 44 44 18 -44 18 -18 44 -18 -44 -44 -18 44 -18z" fill="#d4ff3a"/>
+  <path d="M640 120 l10 26 26 10 -26 10 -10 26 -10 -26 -26 -10 26 -10z" fill="#fff6e5"/>
+  <!-- squiggle -->
+  <path d="M90 720 q40 -60 80 0 t80 0 t80 0" stroke-width="14"/>
+</svg>

@@ -4,11 +4,10 @@ import { useCallback, useRef, useState } from 'react'
 import { ExternalLink, PencilLine } from 'lucide-react'
 import { getSiteFn, saveDraftFn, publishFn } from '~/server/fns/sites'
 import { BlockStack } from '~/components/editor/BlockStack'
-import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 import { Input } from '~/components/ui/Input'
 import { Button } from '~/components/ui/Button'
 import { ThemeSelector } from '~/components/theme-preview/ThemeSelector'
-import { DeviceFrame } from '~/components/theme-preview/DeviceFrame'
+import { SitePreview } from '~/components/theme-preview/SitePreview'
 import {
   Dialog,
   DialogContent,
@@ -63,8 +62,9 @@ function EditorPending() {
         </div>
         {/* Preview pane — full width on mobile, 2/5 on desktop */}
         <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6 min-h-0 pb-6 md:pb-8">
-          {/* Device-frame skeleton */}
-          <div className="p-1 rounded-[1.75rem] bg-surface-hover w-full max-w-[390px] flex-1 min-h-0 flex flex-col overflow-hidden">
+          {/* Device-switcher + device-frame skeleton */}
+          <div className="animate-pulse bg-surface-hover rounded-control h-[34px] w-44 mb-3 shrink-0" />
+          <div className="p-1 rounded-[1.75rem] bg-surface-hover w-full max-w-[398px] flex-1 min-h-0 flex flex-col overflow-hidden">
             <div className="flex-1 bg-white rounded-[1.5rem] overflow-hidden flex flex-col gap-2 p-0">
               <div className="animate-pulse bg-surface-hover h-32 w-full" />
               <div className="animate-pulse bg-surface-hover rounded-card h-20 mx-4 -mt-6" />
@@ -249,14 +249,7 @@ function EditorPage() {
 
         {/* Preview panel — full width on mobile, 2/5 on desktop */}
         <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6 min-h-0 pb-6 md:pb-8">
-          <div className="text-micro text-ink-secondary mb-3">Preview (390px)</div>
-          <DeviceFrame className="min-h-0 flex-1">
-            <div className="public-page w-full" data-theme={doc.theme}>
-              {doc.blocks.map(block => (
-                <BlockRenderer key={block.id} block={block} theme={doc.theme} isPreview />
-              ))}
-            </div>
-          </DeviceFrame>
+          <SitePreview doc={doc} theme={doc.theme} interactive className="flex-1" />
         </div>
       </div>
 
