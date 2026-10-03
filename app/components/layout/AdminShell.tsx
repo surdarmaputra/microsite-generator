@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, type ReactNode } from 'react'
-import { useRouter, useLocation } from '@tanstack/react-router'
+import { useRouter, useLocation, useRouterState } from '@tanstack/react-router'
 import { logoutFn } from '~/server/fns/auth'
+import { clearAuthCache } from '~/lib/authCache'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
+import { NavigationProgress } from './NavigationProgress'
 
 interface AdminShellProps {
   username: string
@@ -14,7 +16,12 @@ export function AdminShell({ username, children }: AdminShellProps) {
   const location = useLocation()
   const pathname = location.pathname
 
-  const isEditorRoute = pathname.startsWith('/admin/editor/')
+  // Use resolved location for layout decisions so the sidebar collapse
+  // and main padding only change after the new route has loaded.
+  const resolvedPathname = useRouterState({
+    select: (s) => (s.resolvedLocation ?? s.location).pathname,
+  })
+  const isEditorRoute = resolvedPathname.startsWith('/admin/editor/')
 
   // Non-editor collapse — persisted in localStorage; initial state false (never read during render)
   const [collapsed, setCollapsed] = useState(false)
@@ -68,34 +75,38 @@ export function AdminShell({ username, children }: AdminShellProps) {
 
   const handleLogout = async () => {
     await logoutFn()
+    clearAuthCache()
     await router.navigate({ to: '/login' })
   }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar
-        collapsed={effectiveCollapsed}
-        mobileOpen={mobileOpen}
-        onToggleCollapse={toggleCollapse}
-        onCloseMobile={() => setMobileOpen(false)}
-      />
-
-      {mobileOpen && (
-        <div
-          onClick={() => setMobileOpen(false)}
-          className="bg-midnight-ink/50 fixed inset-0 z-30 lg:hidden"
-          aria-hidden="true"
+    <>
+      <NavigationProgress />
+      <div className="flex min-h-screen">
+        <Sidebar
+          collapsed={effectiveCollapsed}
+          mobileOpen={mobileOpen}
+          onToggleCollapse={toggleCollapse}
+          onCloseMobile={() => setMobileOpen(false)}
         />
-      )}
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar
-          username={username}
-          onMobileMenuOpen={() => setMobileOpen(true)}
-          onLogout={handleLogout}
-        />
-        <main className={isEditorRoute ? '' : 'p-6'}>{children}</main>
+        {mobileOpen && (
+          <div
+            onClick={() => setMobileOpen(false)}
+            className="bg-midnight-ink/50 fixed inset-0 z-30 lg:hidden"
+            aria-hidden="true"
+          />
+        )}
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <Topbar
+            username={username}
+            onMobileMenuOpen={() => setMobileOpen(true)}
+            onLogout={handleLogout}
+          />
+          <main className={isEditorRoute ? '' : 'p-6'}>{children}</main>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

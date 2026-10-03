@@ -1,12 +1,12 @@
 import { createFileRoute, Outlet, redirect, useLocation } from '@tanstack/react-router'
-import { getAuthFn } from '~/server/fns/auth'
+import { getCachedAuth } from '~/lib/authCache'
 import { ToastProvider } from '~/components/ui/Toast'
 import { AdminShell } from '~/components/layout/AdminShell'
 import { NewSiteDialogProvider } from '~/components/admin/NewSiteDialog'
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: async () => {
-    const auth = await getAuthFn()
+    const auth = await getCachedAuth()
     if (!auth.username) {
       throw redirect({ to: '/login' })
     }
