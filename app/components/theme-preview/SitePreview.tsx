@@ -91,6 +91,8 @@ interface Measurement {
   /** Simulated screen height in unscaled px. */
   screenHeight: number
   contentHeight: number
+  /** The device width this measurement was taken for. Used to detect stale data on device switch. */
+  forWidth: number
 }
 
 /** Lays children out at `width` px and scales them down to the available width. */
@@ -116,8 +118,10 @@ function ScaledViewport({
 
     function measure() {
       if (!viewport || !content) return
+      // Skip measurement until the viewport has been laid out to avoid division-by-zero
+      if (viewport.clientWidth === 0 || viewport.clientHeight === 0) return
       const scale = Math.min(1, viewport.clientWidth / width)
-      setM({ scale, screenHeight: viewport.clientHeight / scale, contentHeight: content.offsetHeight })
+      setM({ scale, screenHeight: viewport.clientHeight / scale, contentHeight: content.offsetHeight, forWidth: width })
     }
 
     const ro = new ResizeObserver(measure)
@@ -127,13 +131,19 @@ function ScaledViewport({
     return () => ro.disconnect()
   }, [width])
 
-  const scale = m?.scale ?? 1
+  // Treat measurement as invalid if it was taken for a different device width.
+  // Prevents the stale mobile scale being applied to desktop width (or vice-versa)
+  // during the one render between a device switch and the ResizeObserver firing.
+  const validM = m?.forWidth === width ? m : null
+  // Use scale 0 when there is no valid measurement: the wrapper collapses to 0 × 0
+  // and cannot overflow its container even if the device width is very large.
+  const scale = validM?.scale ?? 0
   const contentStyle = {
     width,
     transformOrigin: 'top left',
     transform: `scale(${scale})`,
-    visibility: m ? 'visible' : 'hidden',
-    '--site-viewport-height': m ? `${m.screenHeight}px` : undefined,
+    visibility: validM ? 'visible' : 'hidden',
+    '--site-viewport-height': validM ? `${validM.screenHeight}px` : undefined,
   } as CSSProperties
 
   return (
@@ -143,7 +153,7 @@ function ScaledViewport({
     >
       <div
         className="mx-auto overflow-hidden"
-        style={{ width: width * scale, height: m ? m.contentHeight * scale : undefined }}
+        style={{ width: width * scale, height: validM ? validM.contentHeight * scale : 0 }}
       >
         <div
           ref={contentRef}

@@ -248,8 +248,8 @@ function EditorPage() {
         </div>
 
         {/* Preview panel — full width on mobile, 2/5 on desktop */}
-        <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l p-4 md:p-6 min-h-0 pb-6 md:pb-8">
-          <SitePreview doc={doc} theme={doc.theme} interactive className="flex-1" />
+        <div className="border-hairline bg-surface-sidebar flex flex-1 md:w-2/5 flex-col items-center border-l overflow-x-hidden p-4 md:p-6 min-h-0 pb-6 md:pb-8">
+          <SitePreview doc={doc} theme={doc.theme} interactive className="flex-1 px-4 md:px-0" />
         </div>
       </div>
 
