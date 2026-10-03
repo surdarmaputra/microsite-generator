@@ -19,7 +19,7 @@ interface ThemeCardProps {
 export function ThemeCard({ theme, footer, size = 'md', selected, onSelect }: ThemeCardProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
   const themeId = resolveTheme(theme.id)
-  const heightClass = size === 'sm' ? 'h-40' : 'h-96'
+  const heightClass = size === 'sm' ? 'h-80' : 'h-96'
 
   const gradient = (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-surface-card to-transparent" />

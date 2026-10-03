@@ -1,14 +1,13 @@
 'use client'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useCallback, useRef, useState } from 'react'
-import { ExternalLink, PencilLine, Palette } from 'lucide-react'
+import { ExternalLink, PencilLine } from 'lucide-react'
 import { getSiteFn, saveDraftFn, publishFn } from '~/server/fns/sites'
 import { BlockStack } from '~/components/editor/BlockStack'
 import { BlockRenderer } from '~/components/blocks/BlockRenderer'
 import { Input } from '~/components/ui/Input'
 import { Button } from '~/components/ui/Button'
-import { getTheme } from '~/components/themes'
-import { ThemePickerDialog } from '~/components/theme-preview/ThemePickerDialog'
+import { ThemeSelector } from '~/components/theme-preview/ThemeSelector'
 import { DeviceFrame } from '~/components/theme-preview/DeviceFrame'
 import {
   Dialog,
@@ -46,7 +45,6 @@ function EditorPage() {
   const [publishOpen, setPublishOpen] = useState(false)
   const [publishing, setPublishing] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [themeOpen, setThemeOpen] = useState(false)
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const versionRef = useRef(version)
@@ -139,16 +137,7 @@ function EditorPage() {
           <StatusBadge status={status} />
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="outline"
-            size="sm"
-            aria-label="Theme"
-            onClick={() => setThemeOpen(true)}
-            className="flex items-center gap-1.5"
-          >
-            <Palette size={14} />
-            {getTheme(doc.theme).label}
-          </Button>
+          <ThemeSelector value={doc.theme} onChange={handleThemeChange} />
           {saveLabel && (
             <span className={`text-micro ${saveState === 'error' ? 'text-danger' : 'text-ink-secondary'}`}>
               {saveLabel}
@@ -248,12 +237,6 @@ function EditorPage() {
         </DialogContent>
       </Dialog>
 
-      <ThemePickerDialog
-        open={themeOpen}
-        onOpenChange={setThemeOpen}
-        value={doc.theme}
-        onChange={handleThemeChange}
-      />
 
     </div>
   )

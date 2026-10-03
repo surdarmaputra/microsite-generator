@@ -10,17 +10,8 @@ import {
 } from '~/components/ui/Dialog'
 import { Input } from '~/components/ui/Input'
 import { Button } from '~/components/ui/Button'
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '~/components/ui/Select'
-import { ThemePreview } from '~/components/theme-preview/ThemePreview'
-import { listThemes } from '~/components/themes'
+import { ThemeSelector } from '~/components/theme-preview/ThemeSelector'
 import { createSiteFn } from '~/server/fns/sites'
-import { resolveTheme } from '~/lib/doc'
 import type { Theme } from '~/lib/doc'
 
 interface NewSiteDialogContextValue {
@@ -66,13 +57,12 @@ export function NewSiteDialogProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const themes = listThemes()
 
   return (
     <NewSiteDialogCtx.Provider value={{ open }}>
       {children}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent>
           <DialogBody>
             <DialogTitle className="font-display text-title-sm tracking-[-0.022em] font-semibold text-ink-primary mb-4">
               New site
@@ -93,23 +83,8 @@ export function NewSiteDialogProvider({ children }: { children: ReactNode }) {
                 placeholder="my-campaign"
               />
               <div className="flex flex-col gap-1">
-                <label className="text-caption font-medium text-ink-primary">Theme</label>
-                <Select value={theme} onValueChange={(v) => setTheme(resolveTheme(v))}>
-                  <SelectTrigger aria-label="Theme" className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {themes.map((t) => (
-                      <SelectItem key={t.id} value={resolveTheme(t.id)}>
-                        {t.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="relative h-64 overflow-hidden rounded-card border border-hairline">
-                <ThemePreview theme={theme} />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-surface-card to-transparent" />
+                <span className="text-caption font-medium text-ink-primary">Theme</span>
+                <ThemeSelector value={theme} onChange={setTheme} className="w-full justify-start" />
               </div>
               {createError && <p className="text-caption text-danger">{createError}</p>}
             </div>

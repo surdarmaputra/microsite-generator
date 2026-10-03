@@ -129,13 +129,23 @@ test('themes page previews every theme', async ({ page }) => {
 
   // 7. Click "Create website" on the Modern card and verify the dialog Theme preset
   await page.getByRole('article', { name: 'Modern' }).getByRole('button', { name: 'Create website' }).click()
-  const newSiteDialog = page.getByRole('dialog')
-  await expect(newSiteDialog.getByRole('combobox', { name: 'Theme' })).toContainText('Modern')
+  const newSite = page.getByRole('dialog', { name: 'New site' })
+  await expect(newSite.getByRole('button', { name: 'Theme', exact: true })).toContainText('Modern Classy')
+
+  // 7b. Nested dialog: open picker, choose Basic, verify picker closes but New site stays, then restore Modern Classy
+  await newSite.getByRole('button', { name: 'Theme', exact: true }).click()
+  const chooser = page.getByRole('dialog', { name: 'Choose theme' })
+  await chooser.getByRole('button', { name: 'Use Basic theme' }).click()
+  await expect(chooser).not.toBeVisible()
+  await expect(newSite).toBeVisible()
+  await expect(newSite.getByRole('button', { name: 'Theme', exact: true })).toContainText('Basic')
+  await newSite.getByRole('button', { name: 'Theme', exact: true }).click()
+  await chooser.getByRole('button', { name: 'Use Modern Classy theme' }).click()
 
   // 8. Fill in Name and Slug, then create
-  await newSiteDialog.getByLabel('Name').fill('Modern Theme Test')
-  await newSiteDialog.getByLabel('Slug').fill(`theme-${Date.now()}`)
-  await newSiteDialog.getByRole('button', { name: 'Create' }).click()
+  await newSite.getByLabel('Name').fill('Modern Theme Test')
+  await newSite.getByLabel('Slug').fill(`theme-${Date.now()}`)
+  await newSite.getByRole('button', { name: 'Create' }).click()
 
   // 9. Expect to land in the editor with the modern theme applied. The URL changes before the
   //    editor renders, so scope to the editor's preview panel (the themes page and the closing
